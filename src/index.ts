@@ -59,11 +59,11 @@ function activate(
 ): ILauncher {
   const { commands } = app;
   const model = new LauncherModel();
-
   commands.addCommand(CommandIDs.create, {
     icon:swanProjectIcon,
     label: 'Share',
     execute: (args: JSONObject) => {
+      console.dir('CWD = '+JSON.stringify(args))
       const cwd = args['cwd'] ? String(args['cwd']) : '';
       const id = `swan-launcher-${Private.id++}`;
       const callback = (item: Widget) => {
@@ -73,7 +73,7 @@ function activate(
       let stackname = "LCG97";
       let project_name = "Project 1";
 
-      const launcher = new SWANLauncher({ model, cwd, callback, commands },{'is_project':false,'project_name':project_name,'readme':readme,'stack_name':stackname});
+      const launcher = new SWANLauncher({ model, cwd, callback, commands },{'is_project':true,'project_name':project_name,'readme':readme,'stack_name':stackname});
 
       launcher.model = model;
       launcher.title.icon = launcherIcon;

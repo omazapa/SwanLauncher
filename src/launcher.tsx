@@ -24,11 +24,13 @@ import * as React from 'react';
 
 import { ILauncher, LauncherModel } from '@jupyterlab/launcher';
 
-import ReactMarkdown from 'react-markdown'
 
 import swanProjectIconStr from "../style/project.svg";
 import swanReadmeIconStr from "../style/list-alt.svg";
 import swanConfigIconStr from "../style/cog.svg";
+
+
+import {ProjectHeader, ProjectReadme} from './components'
 
 
 
@@ -69,12 +71,13 @@ const KERNEL_CATEGORIES = ['Notebook'];
  * SWAN IOptions for the class SWANLauncher
  * 
  */
-type SWANIOptions = {
+export type SWANIOptions = {
   is_project:boolean,
   project_name:string,
   stack_name:string,
   readme:string
 }
+
 
 
 /**
@@ -139,7 +142,10 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       }
       if(this.swan_options.is_project)
       {
-        categories[cat].push(item);
+        if(cat!=='SWAN')
+        {
+          categories[cat].push(item);
+        }
       }else{
         if(cat!="Notebook")
           categories[cat].push(item);
@@ -174,7 +180,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     orderedCategories.forEach(cat => {
       if(!this.swan_options.is_project)
       {
-        if(cat=='Notebook')
+        if(cat=='Notebook' || cat=='Console')
         return
       }
       const item = categories[cat][0] as ILauncher.IItemOptions;
@@ -224,52 +230,12 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     return (
       <div className="jp-Launcher-body">
         <div className="jp-Launcher-content">
-          <table style={{ width: "100%", height: "64px", display :  (this.swan_options.is_project ? '' : 'none')}}>
-            <tbody>
-            < tr >
-              <td style={{ width: "48px" }}>
-                <LabIcon.resolveReact
-                  icon={swanProjectIcon}
-                  stylesheet="launcherSection"
-                />
-              </td>
-              <td style={{ textAlign: "left" }}>
-                <h2 className="jp-Launcher-sectionTitle">{this.swan_options.project_name}</h2>
-              </td>
-              <td style={{ textAlign: "right" }}>
-                <b>{this.swan_options.stack_name}</b>
-              </td>
-              <td style={{ textAlign: "right", width: "64px" }}>
-                <div className="jp-LauncherCard" id="swan_config_button" onClick={this.changeStack} tabIndex={100}>
-                  <div className="jp-LauncherCard-icon">
-                    {
-                      <LabIcon.resolveReact
-                        icon={swanConfigIcon}
-                      />
-                    }
-                  </div>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+          <ProjectHeader options={this.swan_options}/>
           <div className="jp-Launcher-cwd">
             <h3>{this.cwd}</h3>
           </div>
           {sections}
-
-          <div className="jp-Launcher-section" key='Readme'>
-            <div className="jp-Launcher-sectionHeader">
-              <LabIcon.resolveReact
-                icon={swanReadmeIcon}
-                stylesheet="launcherSection"
-              />
-              <h2 className="jp-Launcher-sectionTitle">Readme</h2>
-            </div>
-            <div className="jp-Launcher-cardContainer">
-            </div>
-            <ReactMarkdown source={this.swan_options.readme}></ReactMarkdown>
-          </div>
+          <ProjectReadme options={this.swan_options}/>
       </div>
       </div >
     );
