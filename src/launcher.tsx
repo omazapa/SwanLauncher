@@ -25,29 +25,8 @@ import * as React from 'react';
 import { ILauncher, LauncherModel } from '@jupyterlab/launcher';
 
 
-import swanProjectIconStr from "../style/project.svg";
-import swanReadmeIconStr from "../style/list-alt.svg";
-import swanConfigIconStr from "../style/cog.svg";
-
-
 import {ProjectHeader, ProjectReadme} from './components'
 
-
-
-export const swanProjectIcon = new LabIcon({
-  name: "jupyterlab_swan:project",
-  svgstr: swanProjectIconStr
-});
-
-export const swanReadmeIcon = new LabIcon({
-  name: "jupyterlab_swan:reame",
-  svgstr: swanReadmeIconStr
-});
-
-export const swanConfigIcon = new LabIcon({
-  name: "jupyterlab_swan:config",
-  svgstr: swanConfigIconStr
-});
 
 /**
  * The class name added to Launcher instances.
@@ -57,27 +36,13 @@ const LAUNCHER_CLASS = 'jp-Launcher';
 /**
  * The known categories of launcher items and their default ordering.
  */
-const KNOWN_CATEGORIES = ['Notebook'];
+var KNOWN_CATEGORIES = ['Other'];
 
 /**
  * These launcher item categories are known to have kernels, so the kernel icons
  * are used.
  */
-const KERNEL_CATEGORIES = ['Notebook'];
-
-
-
-/**
- * SWAN IOptions for the class SWANLauncher
- * 
- */
-export type SWANIOptions = {
-  is_project:boolean,
-  project_name:string,
-  stack_name:string,
-  readme:string
-}
-
+var KERNEL_CATEGORIES = ['Notebook'];
 
 
 /**
@@ -87,13 +52,13 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   /**
    * Construct a new launcher widget.
    */
-  constructor(options: ILauncher.IOptions,swan_options:SWANIOptions) {
+  constructor(options: ILauncher.IOptions) {
     super(options.model);
     this._cwd = options.cwd;
     this._callback = options.callback;
     this._commands = options.commands;
     this.addClass(LAUNCHER_CLASS);
-    this.swan_options = swan_options;
+    this.checkPath(options.cwd)
   }
 
   /**
@@ -104,6 +69,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
   set cwd(value: string) {
     this._cwd = value;
+    this.checkPath(value)
     this.update();
   }
 
@@ -124,15 +90,41 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     console.log('call dialogs and API procedures TODO!')
   }
 
+  protected checkPath(cwd:string):void {
+    if(cwd=="project")
+    {
+    this.is_project=true;
+    this.readme = "# Some markDown \n * added readme support here from request to our API";
+    this.stack_name = "LCG97";
+    this.project_name = "Project 1";
+    }else{
+      this.is_project=false;
+      this.readme = "# Some markDown \n * added readme support here from request to our API";
+      this.stack_name = "LCG97";
+      this.project_name = "Project 1";  
+    }
+  }
+
   /**
    * Render the launcher to virtual DOM nodes.
    */
   protected render(): React.ReactElement<any> | null {
+    
+    console.log('render path changed = '+this._cwd)
+
     // Bail if there is no model.
     if (!this.model) {
       return null;
     }
 
+    if(this.is_project)
+    {
+      KNOWN_CATEGORIES=['Notebook','Console','Other']
+      KERNEL_CATEGORIES=['Notebook','Console']
+
+    }else{
+      KNOWN_CATEGORIES=['Project']
+    }
     // First group-by categories
     const categories = Object.create(null);
     each(this.model.items(), (item, index) => {
@@ -140,12 +132,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       if (!(cat in categories)) {
         categories[cat] = [];
       }
-      if(this.swan_options.is_project)
+      if(this.is_project)
       {
-        if(cat!=='SWAN')
-        {
           categories[cat].push(item);
-        }
       }else{
         if(cat!="Notebook")
           categories[cat].push(item);
@@ -178,9 +167,14 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
 
     // Now create the sections for each category
     orderedCategories.forEach(cat => {
-      if(!this.swan_options.is_project)
+      if(this.is_project)
       {
-        if(cat=='Notebook' || cat=='Console')
+        if(cat=='Project')
+        return
+      }
+      else
+      {
+        if(cat=='Notebook' || cat=='Console' || cat=='CERNBox')
         return
       }
       const item = categories[cat][0] as ILauncher.IItemOptions;
@@ -230,12 +224,12 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     return (
       <div className="jp-Launcher-body">
         <div className="jp-Launcher-content">
-          <ProjectHeader options={this.swan_options}/>
+          <ProjectHeader is_project={this.is_project} project_name={this.project_name} stack_name={this.stack_name}/>
           <div className="jp-Launcher-cwd">
-            <h3>{this.cwd}</h3>
+            <h3>I am at {this.cwd}</h3>
           </div>
           {sections}
-          <ProjectReadme options={this.swan_options}/>
+          <ProjectReadme is_project={this.is_project} readme={this.readme}/>
       </div>
       </div >
     );
@@ -245,7 +239,12 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private _callback: (widget: Widget) => void;
   private _pending = false;
   private _cwd = '';
-  private swan_options:SWANIOptions; 
+
+  private is_project:boolean;
+  private project_name:string;
+  private stack_name:string;
+  private readme:string;
+
 }
 
 /**

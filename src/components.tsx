@@ -1,20 +1,23 @@
 import { LabIcon } from '@jupyterlab/ui-components';
-import {SWANIOptions, swanProjectIcon,swanConfigIcon, swanReadmeIcon} from './launcher'
+import {swanProjectIcon,swanConfigIcon, swanReadmeIcon} from './icons'
 
 import * as React from 'react';
 
 import ReactMarkdown from 'react-markdown'
 
-type SWANProjectHeader = {
-    options:SWANIOptions
+export type SWANProjectIOptions = {
+    is_project:boolean;
+    project_name?:string;
+    stack_name?:string;
+    readme?:string;
   }
 
-export function ProjectHeader(props:SWANProjectHeader) {
+export function ProjectHeader(props:SWANProjectIOptions) {
     function changeStack(){
       console.log('not implemented yet!')
     }
     return (
-      <table style={{ width: "100%", height: "64px", display :  (props.options.is_project ? '' : 'none')}}>
+      <table style={{ width: "100%", height: "64px", display :  (props.is_project ? '' : 'none')}}>
       <tbody>
       < tr >
         <td style={{ width: "48px" }}>
@@ -24,10 +27,10 @@ export function ProjectHeader(props:SWANProjectHeader) {
           />
         </td>
         <td style={{ textAlign: "left" }}>
-          <h2 className="jp-Launcher-sectionTitle">{props.options.project_name}</h2>
+          <h2 className="jp-Launcher-sectionTitle">{props.project_name}</h2>
         </td>
         <td style={{ textAlign: "right" }}>
-          <b>{props.options.stack_name}</b>
+          <b>{props.stack_name}</b>
         </td>
         <td style={{ textAlign: "right", width: "48px", height:"48px"}}>
           <div className="jp-LauncherCard" id="swan_config_button" style={{ width: "48px",height:"48px" }} onClick={changeStack} tabIndex={100}>
@@ -37,6 +40,7 @@ export function ProjectHeader(props:SWANProjectHeader) {
                   icon={swanConfigIcon}
                   width="32px"
                   height="32px"
+                  textAlign="center"
                 />
               }
             </div>
@@ -48,11 +52,11 @@ export function ProjectHeader(props:SWANProjectHeader) {
   );
   }
 
-  export function ProjectReadme(props:SWANProjectHeader) {
-    if(props.options.is_project)
+  export function ProjectReadme(props:SWANProjectIOptions) {
+    if(props.is_project)
     {
     return (
-      <div className="jp-Launcher-section" key='Readme' style={{display :  (props.options.is_project ? '' : 'none')}}>
+      <div className="jp-Launcher-section" key='Readme' style={{display :  (props.is_project ? '' : 'none')}}>
       <div className="jp-Launcher-sectionHeader">
         <LabIcon.resolveReact
           icon={swanReadmeIcon}
@@ -62,7 +66,7 @@ export function ProjectHeader(props:SWANProjectHeader) {
       </div>
       <div className="jp-Launcher-cardContainer">
       </div>
-      <ReactMarkdown source={props.options.readme}></ReactMarkdown>
+      <ReactMarkdown source={props.readme}></ReactMarkdown>
     </div>
       );
     }else

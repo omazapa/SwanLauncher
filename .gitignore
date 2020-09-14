@@ -1,0 +1,15 @@
+# misc
+*~
+*.bak
+*.map
+*.swp
+.DS_Store
+.log/
+\#*#
+.#*
+
+*.swp
+*.map
+
+lib
+node_modules
