@@ -66,18 +66,31 @@ const KERNEL_CATEGORIES = ['Notebook'];
 
 
 /**
+ * SWAN IOptions for the class SWANLauncher
+ * 
+ */
+type SWANIOptions = {
+  is_project:boolean,
+  project_name:string,
+  stack_name:string,
+  readme:string
+}
+
+
+/**
  * A virtual-DOM-based widget for the Launcher.
  */
 export class SWANLauncher extends VDomRenderer<LauncherModel> {
   /**
    * Construct a new launcher widget.
    */
-  constructor(options: ILauncher.IOptions) {
+  constructor(options: ILauncher.IOptions,swan_options:SWANIOptions) {
     super(options.model);
     this._cwd = options.cwd;
     this._callback = options.callback;
     this._commands = options.commands;
     this.addClass(LAUNCHER_CLASS);
+    this.swan_options = swan_options;
   }
 
   /**
@@ -124,7 +137,13 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       if (!(cat in categories)) {
         categories[cat] = [];
       }
-      categories[cat].push(item);
+      if(this.swan_options.is_project)
+      {
+        categories[cat].push(item);
+      }else{
+        if(cat!="Notebook")
+          categories[cat].push(item);
+      }
     });
     // Within each category sort by rank
     for (const cat in categories) {
@@ -153,6 +172,11 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
 
     // Now create the sections for each category
     orderedCategories.forEach(cat => {
+      if(!this.swan_options.is_project)
+      {
+        if(cat=='Notebook')
+        return
+      }
       const item = categories[cat][0] as ILauncher.IItemOptions;
       const args = { ...item.args, cwd: this.cwd };
       const kernel = KERNEL_CATEGORIES.indexOf(cat) > -1;
@@ -192,15 +216,15 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         sections.push(section);
       }
     });
-    let readme = "# Some markDown \n * added readme support here from request to our API";
-    let stackname = "LCG97";
-    let project_name = "Project 1";
+    //let readme = "# Some markDown \n * added readme support here from request to our API";
+    //let stackname = "LCG97";
+    //let project_name = "Project 1";
 
     // Wrap the sections in body and content divs.
     return (
       <div className="jp-Launcher-body">
         <div className="jp-Launcher-content">
-          <table style={{ width: "100%", height: "64px" }}>
+          <table style={{ width: "100%", height: "64px", display :  (this.swan_options.is_project ? '' : 'none')}}>
             <tbody>
             < tr >
               <td style={{ width: "48px" }}>
@@ -210,10 +234,10 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
                 />
               </td>
               <td style={{ textAlign: "left" }}>
-                <h2 className="jp-Launcher-sectionTitle">{project_name}</h2>
+                <h2 className="jp-Launcher-sectionTitle">{this.swan_options.project_name}</h2>
               </td>
               <td style={{ textAlign: "right" }}>
-                <b>{stackname}</b>
+                <b>{this.swan_options.stack_name}</b>
               </td>
               <td style={{ textAlign: "right", width: "64px" }}>
                 <div className="jp-LauncherCard" id="swan_config_button" onClick={this.changeStack} tabIndex={100}>
@@ -244,7 +268,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
             </div>
             <div className="jp-Launcher-cardContainer">
             </div>
-            <ReactMarkdown source={readme}></ReactMarkdown>
+            <ReactMarkdown source={this.swan_options.readme}></ReactMarkdown>
           </div>
       </div>
       </div >
@@ -255,6 +279,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private _callback: (widget: Widget) => void;
   private _pending = false;
   private _cwd = '';
+  private swan_options:SWANIOptions; 
 }
 
 /**

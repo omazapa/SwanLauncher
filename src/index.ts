@@ -69,7 +69,11 @@ function activate(
       const callback = (item: Widget) => {
         labShell.add(item, 'main', { ref: id });
       };
-      const launcher = new SWANLauncher({ model, cwd, callback, commands });
+      let readme = "# Some markDown \n * added readme support here from request to our API";
+      let stackname = "LCG97";
+      let project_name = "Project 1";
+
+      const launcher = new SWANLauncher({ model, cwd, callback, commands },{'is_project':false,'project_name':project_name,'readme':readme,'stack_name':stackname});
 
       launcher.model = model;
       launcher.title.icon = launcherIcon;
