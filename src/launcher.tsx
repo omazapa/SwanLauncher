@@ -169,7 +169,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     orderedCategories.forEach(cat => {
       if(this.is_project)
       {
-        if(cat=='Project')
+        if(cat=='Project' || cat=='Projects')
         return
       }
       else

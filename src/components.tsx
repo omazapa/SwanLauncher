@@ -32,16 +32,17 @@ export function ProjectHeader(props:SWANProjectIOptions) {
         <td style={{ textAlign: "right" }}>
           <b>{props.stack_name}</b>
         </td>
-        <td style={{ textAlign: "right", width: "48px", height:"48px"}}>
-          <div className="jp-LauncherCard" id="swan_config_button" style={{ width: "48px",height:"48px" }} onClick={changeStack} tabIndex={100}>
-            <div className="jp-LauncherCard-icon" style={{  width: "48px",height:"48px" }}>
+        <td style={{ textAlign: "right", width: "24px", height:"24px"}}>
+          <div className="jp-LauncherCard" id="swan_config_button" style={{ width: "26px",height:"26px", borderRadius: '85x'}} onClick={changeStack} tabIndex={100}>
+            <div className="jp-LauncherCard-icon" style={{  width: "26px",height:"26px"}}>
               {
                 <LabIcon.resolveReact
                   icon={swanConfigIcon}
-                  width="32px"
-                  height="32px"
-                  textAlign="center"
-                />
+                  width="20px"
+                  height="20px"
+                  display= "block"
+                  margin-left = "auto"
+                  margin-right = "auto"                />
               }
             </div>
           </div>

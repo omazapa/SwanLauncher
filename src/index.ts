@@ -15,7 +15,7 @@ import { toArray } from '@lumino/algorithm';
 import { JSONObject } from '@lumino/coreutils';
 import { Widget } from '@lumino/widgets';
 
-import {cernboxIcon,swanProjectIcon,swanProjectImportIcon} from './icons'
+import {cernboxIcon,swanProjectImportIcon} from './icons'
 
 
 /**
@@ -99,13 +99,14 @@ function activate(
   }
   model.add(command_cernbox)
 
-  commands.addCommand(CommandIDs.create_project, {
+/*  commands.addCommand(CommandIDs.create_project, {
     icon:swanProjectIcon,
     label: 'New',
     execute: (args: JSONObject) => {
       //TODO!
     }
   })
+  */
   commands.addCommand(CommandIDs.import_project, {
     icon:swanProjectImportIcon,
     label: 'Import',
@@ -114,18 +115,18 @@ function activate(
     }
   })
 
-  let command_create:ILauncher.IItemOptions = {
+/*  let command_create:ILauncher.IItemOptions = {
     command:'swan:create_project',
     category:'Project',
     rank:1
   }
-
+*/
   let command_import:ILauncher.IItemOptions = {
     command:'swan:import_project',
     category:'Project'
   }
 
-  model.add(command_create)
+  //model.add(command_create)
   model.add(command_import)
 
 

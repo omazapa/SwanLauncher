@@ -978,7 +978,7 @@
         "signature": "db6e02fd3d77ebe45d9328da83772787481e0982dcc53723d7a5ba8c6b25bfa1"
       },
       "./src/components.tsx": {
-        "version": "e3ef7d887fee94f5ec7cc97536c29443ddfbdb90173e1e84376909ce777b4e23",
+        "version": "100f07c73010b251cf9648ec3bf76153c6afd972984aafb5f75708d7b4222fcc",
         "signature": "a602cec5fce83d298f78ef3e1df401ed37067e2a9b15938202b9a3d70981d314"
       },
       "./node_modules/@jupyterlab/services/lib/config/index.d.ts": {
@@ -1442,11 +1442,11 @@
         "signature": "5a5b07063ebfa34fa9a703ea8a7e80f52e0d9292e431661d740406b3504cbae9"
       },
       "./src/launcher.tsx": {
-        "version": "8902e515a3dc663becbd91aeafe6c8d465ef7ad9548e2836e02b56583ab6ed08",
+        "version": "34c337b6efeba7a54003fdbe71dc46f95544b6aebc5c71bca3091dc5fdb49622",
         "signature": "9b6252dda7898c667356bce8a5433051ece50b1e6ec2d0ee71bcec59359e1058"
       },
       "./src/index.ts": {
-        "version": "0c98ce1fbefd16d06162318b90a718a086d3d2d4d1e0cf8e76626f283241dc8f",
+        "version": "93ff6f57306cc03c57e3e8553445a17226b0bd09c312f4a7cb5714e47b3eadf6",
         "signature": "4e7028ff5968b7e106321e0e5ad11234a0525c53def394a911cc94e6e7a34989"
       },
       "./src/svg.d.ts": {
@@ -4921,7 +4921,6 @@
       "./node_modules/@jupyterlab/ui-components/lib/index.d.ts",
       "./src/icons.ts",
       "./node_modules/react-markdown/index.d.ts",
-      "./src/components.tsx",
       "./node_modules/@jupyterlab/services/lib/config/index.d.ts",
       "./node_modules/@jupyterlab/observables/lib/observablemap.d.ts",
       "./node_modules/@jupyterlab/observables/lib/observablejson.d.ts",
@@ -5038,8 +5037,9 @@
       "./node_modules/@jupyterlab/launcher/lib/index.d.ts",
       "./node_modules/@lumino/properties/types/index.d.ts",
       "./src/launcher.tsx",
+      "./src/index.ts",
       "./src/svg.d.ts",
-      "./src/index.ts"
+      "./src/components.tsx"
     ]
   },
   "version": "3.7.5"
