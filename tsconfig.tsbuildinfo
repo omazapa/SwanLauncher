@@ -1442,8 +1442,8 @@
         "signature": "5a5b07063ebfa34fa9a703ea8a7e80f52e0d9292e431661d740406b3504cbae9"
       },
       "./src/launcher.tsx": {
-        "version": "07fa645a19be2813c00cbc1d846b8835f84c747c479113bdb829941dd51d37a1",
-        "signature": "9b6252dda7898c667356bce8a5433051ece50b1e6ec2d0ee71bcec59359e1058"
+        "version": "ad8735523777daa682e759924c51325fb11df28640eacf3ed10752bbf280ed20",
+        "signature": "e77e4e66b4d0d6f544750ccd2dfacbeea8237638a86c935b48954dc20614b54d"
       },
       "./src/index.ts": {
         "version": "93ff6f57306cc03c57e3e8553445a17226b0bd09c312f4a7cb5714e47b3eadf6",
@@ -4920,6 +4920,7 @@
       "./node_modules/@jupyterlab/ui-components/lib/tokens.d.ts",
       "./node_modules/@jupyterlab/ui-components/lib/utils.d.ts",
       "./node_modules/@jupyterlab/ui-components/lib/index.d.ts",
+      "./src/icons.ts",
       "./node_modules/react-markdown/index.d.ts",
       "./src/components.tsx",
       "./node_modules/@jupyterlab/services/lib/config/index.d.ts",
@@ -5037,10 +5038,9 @@
       "./node_modules/@jupyterlab/application/lib/index.d.ts",
       "./node_modules/@jupyterlab/launcher/lib/index.d.ts",
       "./node_modules/@lumino/properties/types/index.d.ts",
-      "./src/launcher.tsx",
-      "./src/index.ts",
       "./src/svg.d.ts",
-      "./src/icons.ts"
+      "./src/launcher.tsx",
+      "./src/index.ts"
     ]
   },
   "version": "3.7.5"

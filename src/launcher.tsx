@@ -68,10 +68,19 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   get cwd(): string {
     return this._cwd;
   }
+  protected onAfterShow():any{
+    this._commands.execute('filebrowser:go-to-path',{
+      path:this._cwd,
+      showBrowser:true
+    })
+  }
   set cwd(value: string) {
-    this._cwd = value;
-    this.checkPath(value)
-    this.update();
+    if(this.isVisible)
+    {
+      this._cwd = value;
+      this.checkPath(value)
+      this.update();
+    }
   }
 
   /**
