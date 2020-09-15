@@ -27,6 +27,7 @@ import { ILauncher, LauncherModel } from '@jupyterlab/launcher';
 
 import {ProjectHeader, ProjectReadme} from './components'
 
+import {swanProjectsIcon} from './icons'
 
 /**
  * The class name added to Launcher instances.
@@ -185,9 +186,13 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       // if icon is aliasing iconClass, don't use it
       const iconClass = this._commands.iconClass(item.command, args);
       const _icon = this._commands.icon(item.command, args);
-      const icon = _icon === iconClass ? undefined : _icon;
+      let icon = _icon === iconClass ? undefined : _icon;
 
       if (cat in categories) {
+        if(cat =='Projects')//special icon for projects not associated to the launcher icon
+        {
+          icon=swanProjectsIcon
+        }
         section = (
           <div className="jp-Launcher-section" key={cat}>
             <div className="jp-Launcher-sectionHeader">

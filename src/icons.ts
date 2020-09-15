@@ -5,6 +5,9 @@ import swanProjectImportIconStr from "../style/cloud-download-alt.svg";
 import swanReadmeIconStr from "../style/list-alt.svg";
 import swanConfigIconStr from "../style/cog.svg";
 
+import swanProjectsIconStr from "../style/projects.svg";
+
+
 import cernboxIconStr from "../style/cernbox.svg";
 
 
@@ -27,6 +30,11 @@ export const swanReadmeIcon = new LabIcon({
 export const swanConfigIcon = new LabIcon({
   name: "jupyterlab_swan:config",
   svgstr: swanConfigIconStr
+});
+
+export const swanProjectsIcon = new LabIcon({
+  name: "jupyterlab_swan:projects",
+  svgstr: swanProjectsIconStr
 });
 
 

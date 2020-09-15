@@ -970,8 +970,8 @@
         "signature": "f5bc18613bef94863772f383136e0b8eee89cb78a3d21e2fe61c95993037ee91"
       },
       "./src/icons.ts": {
-        "version": "746f68d1ceb2683f314e432018bd6a0ac8cf655d94a31e4d7b578603f8cca7c2",
-        "signature": "4451d4373e477780fafe03add9633a710a60d58667874a4422c4e5f960d0cd98"
+        "version": "ad24ff452bba58c94b1642953b06317d8001f0e40492204d8d4573a749f744bc",
+        "signature": "8ebbc8b87d4f9d2a3245dfa1f0a17a118156d6208dec12660d3d4a1f5eb5ece0"
       },
       "./node_modules/react-markdown/index.d.ts": {
         "version": "db6e02fd3d77ebe45d9328da83772787481e0982dcc53723d7a5ba8c6b25bfa1",
@@ -1442,7 +1442,7 @@
         "signature": "5a5b07063ebfa34fa9a703ea8a7e80f52e0d9292e431661d740406b3504cbae9"
       },
       "./src/launcher.tsx": {
-        "version": "34c337b6efeba7a54003fdbe71dc46f95544b6aebc5c71bca3091dc5fdb49622",
+        "version": "07fa645a19be2813c00cbc1d846b8835f84c747c479113bdb829941dd51d37a1",
         "signature": "9b6252dda7898c667356bce8a5433051ece50b1e6ec2d0ee71bcec59359e1058"
       },
       "./src/index.ts": {
@@ -3072,7 +3072,8 @@
         "./node_modules/@lumino/widgets/types/index.d.ts",
         "./node_modules/@types/react/index.d.ts",
         "./node_modules/@jupyterlab/launcher/lib/index.d.ts",
-        "./src/components.tsx"
+        "./src/components.tsx",
+        "./src/icons.ts"
       ],
       "./src/index.ts": [
         "./node_modules/@jupyterlab/application/lib/index.d.ts",
@@ -4919,8 +4920,8 @@
       "./node_modules/@jupyterlab/ui-components/lib/tokens.d.ts",
       "./node_modules/@jupyterlab/ui-components/lib/utils.d.ts",
       "./node_modules/@jupyterlab/ui-components/lib/index.d.ts",
-      "./src/icons.ts",
       "./node_modules/react-markdown/index.d.ts",
+      "./src/components.tsx",
       "./node_modules/@jupyterlab/services/lib/config/index.d.ts",
       "./node_modules/@jupyterlab/observables/lib/observablemap.d.ts",
       "./node_modules/@jupyterlab/observables/lib/observablejson.d.ts",
@@ -5039,7 +5040,7 @@
       "./src/launcher.tsx",
       "./src/index.ts",
       "./src/svg.d.ts",
-      "./src/components.tsx"
+      "./src/icons.ts"
     ]
   },
   "version": "3.7.5"
