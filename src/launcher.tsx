@@ -28,6 +28,7 @@ import { ILauncher, LauncherModel } from '@jupyterlab/launcher';
 import {ProjectHeader, ProjectReadme} from './components'
 
 import {swanProjectsIcon} from './icons'
+import { JSONObject } from '@lumino/coreutils';
 
 /**
  * The class name added to Launcher instances.
@@ -37,13 +38,13 @@ const LAUNCHER_CLASS = 'jp-Launcher';
 /**
  * The known categories of launcher items and their default ordering.
  */
-var KNOWN_CATEGORIES = ['Other'];
+var KNOWN_CATEGORIES = [];
 
 /**
  * These launcher item categories are known to have kernels, so the kernel icons
  * are used.
  */
-var KERNEL_CATEGORIES = ['Notebook'];
+var KERNEL_CATEGORIES = ['Notebook','Console'];
 
 
 /**
@@ -121,6 +122,8 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   protected render(): React.ReactElement<any> | null {
     
     console.log('render path changed = '+this._cwd)
+    //request here the project data
+    let kernels_names=["slc7_amd64_gcc700_cmssw_10_5_0_python3"]; //this shuold be get by a request
 
     // Bail if there is no model.
     if (!this.model) {
@@ -130,8 +133,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     if(this.is_project)
     {
       KNOWN_CATEGORIES=['Notebook','Console','Other']
-      KERNEL_CATEGORIES=['Notebook','Console']
-
     }else{
       KNOWN_CATEGORIES=['Project']
     }
@@ -139,12 +140,32 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     const categories = Object.create(null);
     each(this.model.items(), (item, index) => {
       const cat = item.category || 'Other';
+      const args = item.args;
+      console.log('cat = ',cat,' command = ',item.command,' args =', JSON.stringify(item.args));
+
       if (!(cat in categories)) {
         categories[cat] = [];
       }
       if(this.is_project)
       {
+        if(cat == 'Notebook' || cat =='Console')
+        {
+          if(args != null && Object.keys(args).includes('kernelName') && kernels_names.includes(args['kernelName'] as string)  )//asking if allowed kernel in Notebook
+          {
+            categories[cat].push(item);
+          }
+          if(args != null && Object.keys(args).includes('kernelPreference') && args['kernelPreference']!=null  )//asking if allowed kernel in Console
+          {
+            const kernelPreference = args['kernelPreference'] as JSONObject;
+            if(kernels_names.includes(kernelPreference['name'] as string))
+            {
+              categories[cat].push(item);
+            }
+          }
+        }else
+        {
           categories[cat].push(item);
+        }
       }else{
         if(cat!="Notebook")
           categories[cat].push(item);
@@ -187,7 +208,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         if(cat=='Notebook' || cat=='Console' || cat=='CERNBox')
         return
       }
+
       const item = categories[cat][0] as ILauncher.IItemOptions;
+      if(item==null) return
       const args = { ...item.args, cwd: this.cwd };
       const kernel = KERNEL_CATEGORIES.indexOf(cat) > -1;
 

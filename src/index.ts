@@ -70,7 +70,7 @@ function activate(
 
       launcher.model = model;
       launcher.title.icon = launcherIcon;
-      launcher.title.label = 'SWAN Project Launcher';
+      launcher.title.label = 'SWAN Launcher';
     
       const main = new MainAreaWidget({ content: launcher });
 
@@ -92,12 +92,12 @@ function activate(
     }
   });
 
-  let command_cernbox:ILauncher.IItemOptions = {
-    command:'launcher:create',
-    category:'CERNBox'//,
+//  let command_cernbox:ILauncher.IItemOptions = {
+//    command:'launcher:create',
+//    category:'CERNBox'//,
     //kernelIconUrl:"swan:create-project"
-  }
-  model.add(command_cernbox)
+//  }
+//  model.add(command_cernbox)
 
 /*  commands.addCommand(CommandIDs.create_project, {
     icon:swanProjectIcon,

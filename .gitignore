@@ -11,5 +11,7 @@
 *.swp
 *.map
 
+tsconfig.tsbuildinfo
+
 lib
 node_modules
