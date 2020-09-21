@@ -30,6 +30,9 @@ import {ProjectHeader, ProjectReadme} from './components'
 import {swanProjectsIcon} from './icons'
 import { JSONObject } from '@lumino/coreutils';
 
+import { request } from './request';
+
+
 /**
  * The class name added to Launcher instances.
  */
@@ -60,7 +63,30 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this._callback = options.callback;
     this._commands = options.commands;
     this.addClass(LAUNCHER_CLASS);
-    this.checkPath(options.cwd)
+    this.checkPath(options.cwd).then(rvalue =>{
+      this.update();
+    });
+    this.project_kernels=[]
+
+  }
+
+
+  protected pathInfoRequest(cwd:string):any
+  {
+    const dataToSend = { CWD: cwd};
+    try {
+      return request<any>('path', {
+        body: JSON.stringify(dataToSend),
+        method: 'POST'
+      }).then(rvalue => {
+          //console.log(rvalue);
+          return rvalue;
+      });
+    } catch (reason) {
+      console.error(
+        `Error on POST /swan/hello ${dataToSend}.\n${reason}`
+      );
+    }
   }
 
   /**
@@ -79,8 +105,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     if(this.isVisible)
     {
       this._cwd = value;
-      this.checkPath(value)
-      this.update();
+      this.checkPath(value).then(rvalue =>{
+        this.update();
+      });
     }
   }
 
@@ -101,19 +128,38 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     console.log('call dialogs and API procedures TODO!')
   }
 
-  protected checkPath(cwd:string):void {
-    if(cwd=="project")
-    {
-    this.is_project=true;
-    this.readme = "# Some markDown \n * added readme support here from request to our API";
-    this.stack_name = "LCG97";
-    this.project_name = "Project 1";
-    }else{
-      this.is_project=false;
-      this.readme = "# Some markDown \n * added readme support here from request to our API";
-      this.stack_name = "LCG97";
-      this.project_name = "Project 1";  
-    }
+  async checkPath(cwd:string):Promise<void> {
+    const info = await this.pathInfoRequest(cwd);
+      console.log(info);
+    
+      this.is_project=info.is_project;
+      
+      if(this.is_project)
+      {
+        const project_data = info['project_data'] as JSONObject;
+        this.project_name = project_data['name'] as string; 
+        this.stack_name = project_data['stack_name'] as string;
+        this.readme = project_data['readme'] as string;
+        this.project_kernels = project_data['kernels'] as string[]; 
+        console.log('this.project_kernels = ',this.project_kernels);
+
+      }
+      // this.pathInfoRequest(cwd).then((info: { is_project: boolean; project_data:JSONObject  }) =>{//promise from the request
+      //   console.log(info);
+      
+      //   this.is_project=info.is_project;
+      //   console.log('info = ',info);
+        
+      //   if(this.is_project)
+      //   {
+      //     const project_data = info['project_data'] as JSONObject;
+      //     this.project_name = project_data['name'] as string; 
+      //     this.stack_name = project_data['stack_name'] as string;
+      //     this.readme = project_data['readme'] as string;
+      //     this.project_kernels = project_data['kernels'] as string[]; 
+      //   }
+    
+     //});
   }
 
   /**
@@ -122,14 +168,12 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   protected render(): React.ReactElement<any> | null {
     
     console.log('render path changed = '+this._cwd)
-    //request here the project data
-    let kernels_names=["slc7_amd64_gcc700_cmssw_10_5_0_python3"]; //this shuold be get by a request
 
     // Bail if there is no model.
     if (!this.model) {
       return null;
     }
-
+    //console.log(this.project_kernels);
     if(this.is_project)
     {
       KNOWN_CATEGORIES=['Notebook','Console','Other']
@@ -150,17 +194,19 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       {
         if(cat == 'Notebook' || cat =='Console')
         {
-          if(args != null && Object.keys(args).includes('kernelName') && kernels_names.includes(args['kernelName'] as string)  )//asking if allowed kernel in Notebook
+          let kernelName = ""
+          if(args != null && Object.keys(args).includes('kernelName') )
+          {
+              kernelName=args!=null? args['kernelName'] as string:"";
+          }
+          if(args != null && Object.keys(args).includes('kernelPreference') && args['kernelPreference']!=null  )
+          {
+              const kernelPreference = args['kernelPreference'] as JSONObject;
+              kernelName=kernelPreference['name'] as string;
+          }
+          if(this.project_kernels.map(v => v.toLowerCase()).includes(kernelName.toLowerCase()))//asking if allowed kernel in Notebook
           {
             categories[cat].push(item);
-          }
-          if(args != null && Object.keys(args).includes('kernelPreference') && args['kernelPreference']!=null  )//asking if allowed kernel in Console
-          {
-            const kernelPreference = args['kernelPreference'] as JSONObject;
-            if(kernels_names.includes(kernelPreference['name'] as string))
-            {
-              categories[cat].push(item);
-            }
           }
         }else
         {
@@ -281,6 +327,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private project_name:string;
   private stack_name:string;
   private readme:string;
+  private project_kernels:string[];
 
 }
 
