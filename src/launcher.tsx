@@ -3,8 +3,10 @@
 
 import {
   showErrorMessage,
-  VDomRenderer
+  VDomRenderer,
 } from '@jupyterlab/apputils';
+
+import {Spinner} from '@jupyterlab/apputils';
 
 import { classes, LabIcon } from '@jupyterlab/ui-components';
 
@@ -63,8 +65,11 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this._callback = options.callback;
     this._commands = options.commands;
     this.addClass(LAUNCHER_CLASS);
+    let spinner=new Spinner();
+    spinner.show();
     this.checkPath(options.cwd).then(rvalue =>{
       this.update();
+      spinner.hide();
     });
     this.project_kernels=[]
 
@@ -144,22 +149,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         console.log('this.project_kernels = ',this.project_kernels);
 
       }
-      // this.pathInfoRequest(cwd).then((info: { is_project: boolean; project_data:JSONObject  }) =>{//promise from the request
-      //   console.log(info);
-      
-      //   this.is_project=info.is_project;
-      //   console.log('info = ',info);
-        
-      //   if(this.is_project)
-      //   {
-      //     const project_data = info['project_data'] as JSONObject;
-      //     this.project_name = project_data['name'] as string; 
-      //     this.stack_name = project_data['stack_name'] as string;
-      //     this.readme = project_data['readme'] as string;
-      //     this.project_kernels = project_data['kernels'] as string[]; 
-      //   }
-    
-     //});
   }
 
   /**
@@ -299,9 +288,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         sections.push(section);
       }
     });
-    //let readme = "# Some markDown \n * added readme support here from request to our API";
-    //let stackname = "LCG97";
-    //let project_name = "Project 1";
 
     // Wrap the sections in body and content divs.
     return (
@@ -309,7 +295,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         <div className="jp-Launcher-content">
           <ProjectHeader is_project={this.is_project} project_name={this.project_name} stack_name={this.stack_name}/>
           <div className="jp-Launcher-cwd">
-            <h3>I am at {this.cwd}</h3>
           </div>
           {sections}
           <ProjectReadme is_project={this.is_project} readme={this.readme}/>
