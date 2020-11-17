@@ -80,7 +80,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   {
     const dataToSend = { CWD: cwd};
     try {
-      return request<any>('path', {
+      return request<any>('api/contents', {
         body: JSON.stringify(dataToSend),
         method: 'POST'
       }).then(rvalue => {

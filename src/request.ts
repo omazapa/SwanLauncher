@@ -17,7 +17,7 @@ export async function request<T>(
   const settings = ServerConnection.makeSettings();
   const requestUrl = URLExt.join(
     settings.baseUrl,
-    'swan',
+    '',
     endPoint
   );
 
