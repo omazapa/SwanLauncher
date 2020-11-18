@@ -76,20 +76,36 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
 
 
-  protected pathInfoRequest(cwd:string):any
+  protected contentRequest(cwd:string):any
   {
-    const dataToSend = { CWD: cwd};
     try {
-      return request<any>('api/contents', {
-        body: JSON.stringify(dataToSend),
-        method: 'POST'
+      return request<any>('api/contents/'+ cwd, {
+        method: 'GET'
       }).then(rvalue => {
-          //console.log(rvalue);
+          console.log(rvalue);
           return rvalue;
       });
     } catch (reason) {
       console.error(
-        `Error on POST /swan/hello ${dataToSend}.\n${reason}`
+        `Error on GET 'api/contents'+ ${cwd}.\n${reason}`
+      );
+    }
+  }
+
+  protected projectInfoRequest(cwd:string):any
+  {
+    const dataToSend = { CWD: cwd};
+    try {
+      return request<any>('swan/project/info', {
+        body: JSON.stringify(dataToSend),
+        method: 'POST'
+      }).then(rvalue => {
+          console.log(rvalue);
+          return rvalue;
+      });
+    } catch (reason) {
+      console.error(
+        `Error on POST 'swan/project/info'+ ${dataToSend}.\n${reason}`
       );
     }
   }
@@ -134,14 +150,16 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
 
   async checkPath(cwd:string):Promise<void> {
-    const info = await this.pathInfoRequest(cwd);
+    const info = await this.contentRequest(cwd);
       console.log(info);
     
       this.is_project=info.is_project;
       
       if(this.is_project)
       {
-        const project_data = info['project_data'] as JSONObject;
+        const project_info = await this.projectInfoRequest(cwd);
+        const project_data = project_info['project_data'] as JSONObject;
+        console.log(project_data)
         this.project_name = project_data['name'] as string; 
         this.stack_name = project_data['stack_name'] as string;
         this.readme = project_data['readme'] as string;
