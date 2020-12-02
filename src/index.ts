@@ -52,7 +52,7 @@ function activate(
   labShell: ILabShell,
   palette: ICommandPalette | null
 ): ILauncher {
-  const { commands } = app;
+  const { serviceManager, commands } = app;
   const model = new LauncherModel();
   var launcher = null;
   commands.addCommand(CommandIDs.create_launcher, {
@@ -67,8 +67,9 @@ function activate(
       };
 
       launcher = new SWANLauncher({ model, cwd, callback, commands });
-
+      
       launcher.model = model;
+      launcher.service_manager = serviceManager;
       launcher.title.icon = launcherIcon;
       launcher.title.label = 'SWAN Launcher';
     

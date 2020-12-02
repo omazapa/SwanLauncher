@@ -6,7 +6,7 @@ import {
   VDomRenderer,
 } from '@jupyterlab/apputils';
 
-import {Spinner} from '@jupyterlab/apputils';
+//import {Spinner} from '@jupyterlab/apputils';
 
 import { classes, LabIcon } from '@jupyterlab/ui-components';
 
@@ -34,6 +34,7 @@ import { JSONObject } from '@lumino/coreutils';
 
 import { request } from './request';
 
+import {ServiceManager} from '@jupyterlab/services'
 
 /**
  * The class name added to Launcher instances.
@@ -61,15 +62,18 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
    */
   constructor(options: ILauncher.IOptions) {
     super(options.model);
+    this.model = options.model;
     this._cwd = options.cwd;
     this._callback = options.callback;
     this._commands = options.commands;
     this.addClass(LAUNCHER_CLASS);
-    let spinner=new Spinner();
-    spinner.show();
+    //this.spinner=new Spinner();
+    //this.modelChanged.connect(this.update,this);
+
     this.checkPath(options.cwd).then(rvalue =>{
+      //this.ksm.refreshSpecs();
       this.update();
-      spinner.hide();
+      //this.spinner.hide();
     });
     this.project_kernels=[]
 
@@ -82,7 +86,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       return request<any>('api/contents/'+ cwd, {
         method: 'GET'
       }).then(rvalue => {
-          console.log(rvalue);
+          //console.log(rvalue);
           return rvalue;
       });
     } catch (reason) {
@@ -100,7 +104,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         body: JSON.stringify(dataToSend),
         method: 'POST'
       }).then(rvalue => {
-          console.log(rvalue);
+        this.model.stateChanged.emit(void 0);
+        this.update();
+            //console.log(rvalue);
           return rvalue;
       });
     } catch (reason) {
@@ -109,19 +115,39 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       );
     }
   }
-
+/*
+  protected kernelsInfoRequest():any
+  {
+    try {
+      return request<any>('swan/kernels/info', {
+        method: 'GET'
+      }).then(rvalue => {
+          console.log(rvalue);
+          return rvalue;
+      });
+    } catch (reason) {
+      console.error(
+        `Error on GET 'swan/kernels/info'.\n${reason}`
+      );
+    }
+  }
+*/
   /**
    * The cwd of the launcher.
    */
   get cwd(): string {
     return this._cwd;
   }
+
   protected onAfterShow():any{
+    //this.spinner.show();
     this._commands.execute('filebrowser:go-to-path',{
       path:this._cwd,
       showBrowser:true
     })
+    this.update();
   }
+
   set cwd(value: string) {
     if(this.isVisible)
     {
@@ -150,8 +176,10 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
 
   async checkPath(cwd:string):Promise<void> {
+    //this.MainKernelSpecSetCWDRequest(cwd);
+    //this.KernelSpecSetCWDRequest(cwd);
     const info = await this.contentRequest(cwd);
-      console.log(info);
+      //console.log(info);
     
       this.is_project=info.is_project;
       
@@ -159,13 +187,17 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       {
         const project_info = await this.projectInfoRequest(cwd);
         const project_data = project_info['project_data'] as JSONObject;
-        console.log(project_data)
+        //console.log(project_data)
         this.project_name = project_data['name'] as string; 
         this.stack_name = project_data['stack_name'] as string;
         this.readme = project_data['readme'] as string;
         this.project_kernels = project_data['kernels'] as string[]; 
         console.log('this.project_kernels = ',this.project_kernels);
-
+        //await this.ksm.ready;
+        //this.ksm.refreshSpecs();
+        //this.model.stateChanged.emit();
+        this.service_manager.kernelspecs.refreshSpecs();
+        this.update();
       }
   }
 
@@ -192,7 +224,8 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     each(this.model.items(), (item, index) => {
       const cat = item.category || 'Other';
       const args = item.args;
-      console.log('cat = ',cat,' command = ',item.command,' args =', JSON.stringify(item.args));
+      //console.log('cat = ',cat,' command = ',item.command,' args =', JSON.stringify(item.args));
+      //console.log('item = ',item,' str_itm = ',JSON.stringify(item));
 
       if (!(cat in categories)) {
         categories[cat] = [];
@@ -331,6 +364,8 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private stack_name:string;
   private readme:string;
   private project_kernels:string[];
+  public service_manager:ServiceManager
+//  private spinner:Spinner;
 
 }
 
