@@ -67,13 +67,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this._callback = options.callback;
     this._commands = options.commands;
     this.addClass(LAUNCHER_CLASS);
-    //this.spinner=new Spinner();
-    //this.modelChanged.connect(this.update,this);
 
     this.checkPath(options.cwd).then(rvalue =>{
-      //this.ksm.refreshSpecs();
       this.update();
-      //this.spinner.hide();
     });
     this.project_kernels=[]
 
@@ -145,6 +141,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       path:this._cwd,
       showBrowser:true
     })
+    this.service_manager.kernelspecs.refreshSpecs();
     this.update();
   }
 
@@ -197,9 +194,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         //this.ksm.refreshSpecs();
         //this.model.stateChanged.emit();
         this.service_manager.kernelspecs.refreshSpecs();
-        this.update();
       }
-  }
+      this.update();
+    }
 
   /**
    * Render the launcher to virtual DOM nodes.
