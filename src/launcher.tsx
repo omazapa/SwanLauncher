@@ -182,6 +182,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       
       if(this.is_project)
       {
+       /*
         const project_info = await this.projectInfoRequest(cwd);
         const project_data = project_info['project_data'] as JSONObject;
         //console.log(project_data)
@@ -193,6 +194,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         //await this.ksm.ready;
         //this.ksm.refreshSpecs();
         //this.model.stateChanged.emit();
+        */
         this.service_manager.kernelspecs.refreshSpecs();
       }
       this.update();

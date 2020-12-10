@@ -17,6 +17,8 @@
     "lib/*.js.map",
     "lib/*.js",
     "lib/*.jsx",
+    "src/*.ts",
+    "src/*.tsx",
     "schema/*.json",
     "style/*.css",
     "style/*.svg"
