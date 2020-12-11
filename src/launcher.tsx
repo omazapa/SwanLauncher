@@ -92,15 +92,14 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     }
   }
 
-  protected projectInfoRequest(cwd:string):any
+  protected projectInfoRequest(project:string,is_project:boolean):any
   {
-    const dataToSend = { CWD: cwd};
+    const dataToSend = {'path':project,'is_project':is_project};
     try {
       return request<any>('swan/project/info', {
         body: JSON.stringify(dataToSend),
         method: 'POST'
       }).then(rvalue => {
-        this.model.stateChanged.emit(void 0);
         this.update();
             //console.log(rvalue);
           return rvalue;
@@ -145,6 +144,20 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this.update();
   }
 
+  onAfterHide():any{
+    this._commands.execute('filebrowser:go-to-path',{
+      path:this._cwd,
+      showBrowser:true
+    })
+    this.service_manager.kernelspecs.refreshSpecs();
+  }
+  onActivateRequest():any{
+    this._commands.execute('filebrowser:go-to-path',{
+      path:this._cwd,
+      showBrowser:true
+    })
+    this.service_manager.kernelspecs.refreshSpecs();
+  }
   set cwd(value: string) {
     if(this.isVisible)
     {
@@ -179,11 +192,10 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       //console.log(info);
     
       this.is_project=info.is_project;
-      
+      console.log(info)
+      const project_info = await this.projectInfoRequest(info.path,info.is_project);
       if(this.is_project)
       {
-       /*
-        const project_info = await this.projectInfoRequest(cwd);
         const project_data = project_info['project_data'] as JSONObject;
         //console.log(project_data)
         this.project_name = project_data['name'] as string; 
@@ -194,7 +206,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         //await this.ksm.ready;
         //this.ksm.refreshSpecs();
         //this.model.stateChanged.emit();
-        */
         this.service_manager.kernelspecs.refreshSpecs();
       }
       this.update();
