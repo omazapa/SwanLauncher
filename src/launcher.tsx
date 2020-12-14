@@ -137,26 +137,27 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   protected onAfterShow():any{
     //this.spinner.show();
     this._commands.execute('filebrowser:go-to-path',{
-      path:this._cwd,
-      showBrowser:true
-    })
-    this.service_manager.kernelspecs.refreshSpecs();
-    this.update();
+       path:this._cwd,
+       showBrowser:true
+     }).then(()=>{
+      this.service_manager.kernelspecs.refreshSpecs();
+      this.update();  
+     })
   }
 
   onAfterHide():any{
-    this._commands.execute('filebrowser:go-to-path',{
-      path:this._cwd,
-      showBrowser:true
-    })
-    this.service_manager.kernelspecs.refreshSpecs();
+    // this._commands.execute('filebrowser:go-to-path',{
+      // path:this._cwd,
+      // showBrowser:true
+    // })
+    // this.service_manager.kernelspecs.refreshSpecs();
   }
   onActivateRequest():any{
-    this._commands.execute('filebrowser:go-to-path',{
-      path:this._cwd,
-      showBrowser:true
-    })
-    this.service_manager.kernelspecs.refreshSpecs();
+    // this._commands.execute('filebrowser:go-to-path',{
+      // path:this._cwd,
+      // showBrowser:true
+    // })
+    // this.service_manager.kernelspecs.refreshSpecs();
   }
   set cwd(value: string) {
     if(this.isVisible)
@@ -192,7 +193,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       //console.log(info);
     
       this.is_project=info.is_project;
-      console.log(info)
+      //console.log(info)
       const project_info = await this.projectInfoRequest(info.path,info.is_project);
       if(this.is_project)
       {
