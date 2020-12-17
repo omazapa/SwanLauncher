@@ -135,7 +135,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
 
   protected onAfterShow():any{
-    //this.spinner.show();
     this._commands.execute('filebrowser:go-to-path',{
        path:this._cwd,
        showBrowser:true
@@ -145,20 +144,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
      })
   }
 
-  onAfterHide():any{
-    // this._commands.execute('filebrowser:go-to-path',{
-      // path:this._cwd,
-      // showBrowser:true
-    // })
-    // this.service_manager.kernelspecs.refreshSpecs();
-  }
-  onActivateRequest():any{
-    // this._commands.execute('filebrowser:go-to-path',{
-      // path:this._cwd,
-      // showBrowser:true
-    // })
-    // this.service_manager.kernelspecs.refreshSpecs();
-  }
   set cwd(value: string) {
     if(this.isVisible)
     {
@@ -187,26 +172,18 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
 
   async checkPath(cwd:string):Promise<void> {
-    //this.MainKernelSpecSetCWDRequest(cwd);
-    //this.KernelSpecSetCWDRequest(cwd);
     const info = await this.contentRequest(cwd);
-      //console.log(info);
     
       this.is_project=info.is_project;
-      //console.log(info)
       const project_info = await this.projectInfoRequest(info.path,info.is_project);
       if(this.is_project)
       {
         const project_data = project_info['project_data'] as JSONObject;
-        //console.log(project_data)
         this.project_name = project_data['name'] as string; 
         this.stack_name = project_data['stack_name'] as string;
         this.readme = project_data['readme'] as string;
         this.project_kernels = project_data['kernels'] as string[]; 
         console.log('this.project_kernels = ',this.project_kernels);
-        //await this.ksm.ready;
-        //this.ksm.refreshSpecs();
-        //this.model.stateChanged.emit();
         this.service_manager.kernelspecs.refreshSpecs();
       }
       this.update();
@@ -306,13 +283,19 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         return
       }
 
-      const item = categories[cat][0] as ILauncher.IItemOptions;
+      let item = categories[cat][0] as ILauncher.IItemOptions;
       if(item==null) return
+      console.log(item)
+      if(this.is_project && item.command == "terminal:create-new")
+      {
+        item.args = {initialCommand:'swan_bash '+this.project_name+'; exit 0'}
+      }
       const args = { ...item.args, cwd: this.cwd };
       const kernel = KERNEL_CATEGORIES.indexOf(cat) > -1;
 
       // DEPRECATED: remove _icon when lumino 2.0 is adopted
       // if icon is aliasing iconClass, don't use it
+      
       const iconClass = this._commands.iconClass(item.command, args);
       const _icon = this._commands.icon(item.command, args);
       let icon = _icon === iconClass ? undefined : _icon;
