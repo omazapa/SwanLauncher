@@ -289,6 +289,8 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       if(this.is_project && item.command == "terminal:create-new")
       {
         item.args = {initialCommand:'swan_bash '+this.project_name+'; exit 0'}
+      }else{
+        item.args = {initialCommand:''}
       }
       const args = { ...item.args, cwd: this.cwd };
       const kernel = KERNEL_CATEGORIES.indexOf(cat) > -1;
