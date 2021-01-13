@@ -82,7 +82,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       return request<any>('api/contents/'+ cwd, {
         method: 'GET'
       }).then(rvalue => {
-          //console.log(rvalue);
           return rvalue;
       });
     } catch (reason) {
@@ -101,8 +100,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         method: 'POST'
       }).then(rvalue => {
         this.update();
-            //console.log(rvalue);
-          return rvalue;
+        return rvalue;
       });
     } catch (reason) {
       console.error(
@@ -110,23 +108,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       );
     }
   }
-/*
-  protected kernelsInfoRequest():any
-  {
-    try {
-      return request<any>('swan/kernels/info', {
-        method: 'GET'
-      }).then(rvalue => {
-          console.log(rvalue);
-          return rvalue;
-      });
-    } catch (reason) {
-      console.error(
-        `Error on GET 'swan/kernels/info'.\n${reason}`
-      );
-    }
-  }
-*/
   /**
    * The cwd of the launcher.
    */
@@ -183,7 +164,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         this.stack_name = project_data['stack_name'] as string;
         this.readme = project_data['readme'] as string;
         this.project_kernels = project_data['kernels'] as string[]; 
-        console.log('this.project_kernels = ',this.project_kernels);
         this.service_manager.kernelspecs.refreshSpecs();
       }
       this.update();
@@ -194,13 +174,11 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
    */
   protected render(): React.ReactElement<any> | null {
     
-    console.log('render path changed = '+this._cwd)
 
     // Bail if there is no model.
     if (!this.model) {
       return null;
     }
-    //console.log(this.project_kernels);
     if(this.is_project)
     {
       KNOWN_CATEGORIES=['Notebook','Console','Other']
@@ -212,8 +190,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     each(this.model.items(), (item, index) => {
       const cat = item.category || 'Other';
       const args = item.args;
-      //console.log('cat = ',cat,' command = ',item.command,' args =', JSON.stringify(item.args));
-      //console.log('item = ',item,' str_itm = ',JSON.stringify(item));
 
       if (!(cat in categories)) {
         categories[cat] = [];
@@ -232,7 +208,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
               const kernelPreference = args['kernelPreference'] as JSONObject;
               kernelName=kernelPreference['name'] as string;
           }
-          if(this.project_kernels.map(v => v.toLowerCase()).includes(kernelName.toLowerCase()))//asking if allowed kernel in Notebook
+          if(this.project_kernels!==null && this.project_kernels.map(v => v.toLowerCase()).includes(kernelName.toLowerCase()))//asking if allowed kernel in Notebook
           {
             categories[cat].push(item);
           }
@@ -285,11 +261,10 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
 
       let item = categories[cat][0] as ILauncher.IItemOptions;
       if(item==null) return
-      console.log(item)
       if(this.is_project && item.command == "terminal:create-new")
       {
         item.args = {initialCommand:'swan_bash '+this.project_name+'; exit 0'}
-      }else{
+      }else if(item.command == "terminal:create-new"){
         item.args = {initialCommand:''}
       }
       const args = { ...item.args, cwd: this.cwd };

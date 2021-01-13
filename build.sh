@@ -5,6 +5,7 @@
 #jupyter serverextension enable --py jupyterlab_swan
 # Install dependencies
 jupyter labextension disable @jupyterlab/launcher-extension
+jlpm clean
 jlpm
 # Build Typescript source
 jlpm build
