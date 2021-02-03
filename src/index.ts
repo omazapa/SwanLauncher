@@ -42,6 +42,7 @@ const ProjectLauncher: JupyterFrontEndPlugin<ILauncher> = {
 /**
  * Export the plugin as default.
  */
+export {SWANLauncher};
 export default ProjectLauncher;
 
 /**
