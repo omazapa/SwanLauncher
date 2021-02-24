@@ -71,7 +71,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this.checkPath(options.cwd).then(rvalue =>{
       this.update();
     });
-    this.project_kernels=[]
 
   }
 
@@ -163,7 +162,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         this.project_name = project_data['name'] as string; 
         this.stack_name = project_data['stack_name'] as string;
         this.readme = project_data['readme'] as string;
-        this.project_kernels = project_data['kernels'] as string[]; 
         this.service_manager.kernelspecs.refreshSpecs();
       }
       this.update();
@@ -189,7 +187,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     const categories = Object.create(null);
     each(this.model.items(), (item, index) => {
       const cat = item.category || 'Other';
-      const args = item.args;
+      //const args = item.args;
 
       if (!(cat in categories)) {
         categories[cat] = [];
@@ -198,7 +196,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       {
         if(cat == 'Notebook' || cat =='Console')
         {
-          let kernelName = ""
+/*          let kernelName = ""
           if(args != null && Object.keys(args).includes('kernelName') )
           {
               kernelName=args!=null? args['kernelName'] as string:"";
@@ -212,6 +210,8 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
           {
             categories[cat].push(item);
           }
+  */
+            categories[cat].push(item);
         }else
         {
           categories[cat].push(item);
@@ -334,7 +334,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private project_name:string;
   private stack_name:string;
   private readme:string;
-  private project_kernels:string[];
   public service_manager:ServiceManager
 //  private spinner:Spinner;
 
