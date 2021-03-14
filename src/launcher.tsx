@@ -90,9 +90,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     }
   }
 
-  protected projectInfoRequest(project:string,is_project:boolean):any
+  protected projectInfoRequest(project:string):any
   {
-    const dataToSend = {'path':project,'is_project':is_project};
+    const dataToSend = {'path':project};
     try {
       return request<any>('swan/project/info', {
         body: JSON.stringify(dataToSend),
@@ -152,16 +152,22 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
 
   async checkPath(cwd:string):Promise<void> {
-    const info = await this.contentRequest(cwd);
+      const info = await this.contentRequest(cwd);
     
       this.is_project=info.is_project;
-      const project_info = await this.projectInfoRequest(info.path,info.is_project);
+      const project_info = await this.projectInfoRequest(info.path);
       if(this.is_project)
       {
         const project_data = project_info['project_data'] as JSONObject;
         this.project_name = project_data['name'] as string; 
         this.stack_name = project_data['stack_name'] as string;
-        this.readme = project_data['readme'] as string;
+        if ('readme' in project_data)
+        {
+          this.readme = project_data['readme'] as string;
+        }else
+        {
+          this.readme = null;
+        }
         this.service_manager.kernelspecs.refreshSpecs();
       }
       this.update();
@@ -196,21 +202,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       {
         if(cat == 'Notebook' || cat =='Console')
         {
-/*          let kernelName = ""
-          if(args != null && Object.keys(args).includes('kernelName') )
-          {
-              kernelName=args!=null? args['kernelName'] as string:"";
-          }
-          if(args != null && Object.keys(args).includes('kernelPreference') && args['kernelPreference']!=null  )
-          {
-              const kernelPreference = args['kernelPreference'] as JSONObject;
-              kernelName=kernelPreference['name'] as string;
-          }
-          if(this.project_kernels!==null && this.project_kernels.map(v => v.toLowerCase()).includes(kernelName.toLowerCase()))//asking if allowed kernel in Notebook
-          {
-            categories[cat].push(item);
-          }
-  */
             categories[cat].push(item);
         }else
         {
@@ -333,7 +324,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private is_project:boolean;
   private project_name:string;
   private stack_name:string;
-  private readme:string;
+  private readme:string | null;
   public service_manager:ServiceManager
 //  private spinner:Spinner;
 

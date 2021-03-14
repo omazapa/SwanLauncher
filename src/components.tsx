@@ -9,7 +9,7 @@ export type SWANProjectIOptions = {
     is_project:boolean;
     project_name?:string;
     stack_name?:string;
-    readme?:string;
+    readme?:string | null;
   }
 
 export function ProjectHeader(props:SWANProjectIOptions) {
@@ -54,7 +54,7 @@ export function ProjectHeader(props:SWANProjectIOptions) {
   }
 
   export function ProjectReadme(props:SWANProjectIOptions) {
-    if(props.is_project)
+    if(props.is_project && props.readme !== null)
     {
     return (
       <div className="jp-Launcher-section" key='Readme' style={{display :  (props.is_project ? '' : 'none')}}>
@@ -67,7 +67,7 @@ export function ProjectHeader(props:SWANProjectIOptions) {
       </div>
       <div className="jp-Launcher-cardContainer">
       </div>
-      <ReactMarkdown source={props.readme}></ReactMarkdown>
+      <ReactMarkdown source={props.readme as string}></ReactMarkdown>
     </div>
       );
     }else
