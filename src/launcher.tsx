@@ -160,7 +160,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       {
         const project_data = project_info['project_data'] as JSONObject;
         this.project_name = project_data['name'] as string; 
-        this.stack_name = project_data['stack_name'] as string;
+        this.stack_name = project_data['stack'] as string;
         if ('readme' in project_data)
         {
           this.readme = project_data['readme'] as string;
