@@ -5,10 +5,12 @@ import * as React from 'react';
 
 import ReactMarkdown from 'react-markdown'
 
+
 export type SWANProjectIOptions = {
     is_project:boolean;
     project_name?:string;
-    stack_name?:string;
+    stack?:string;
+    platform?:string | "";
     readme?:string | null;
   }
 
@@ -30,7 +32,7 @@ export function ProjectHeader(props:SWANProjectIOptions) {
           <h2 className="jp-Launcher-sectionTitle">{props.project_name}</h2>
         </td>
         <td style={{ textAlign: "right", color: "#808080"}}>
-          {props.stack_name}
+          {props.stack} ({props.platform})
         </td>
         <td style={{ textAlign: "right", width: "24px", height:"24px", color: "#808080"}}>
           <div className="" id="swan_config_button" style={{ width: "26px",height:"26px", borderRadius: '85x'}} onClick={changeStack} tabIndex={100}>

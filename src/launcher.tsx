@@ -160,7 +160,8 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       {
         const project_data = project_info['project_data'] as JSONObject;
         this.project_name = project_data['name'] as string; 
-        this.stack_name = project_data['stack'] as string;
+        this.release = project_data['release'] as string;
+        this.platform = project_data['platform'] as string;
         if ('readme' in project_data)
         {
           this.readme = project_data['readme'] as string;
@@ -250,7 +251,11 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         return
       }
 
-      let item = categories[cat][0] as ILauncher.IItemOptions;
+      let item = null;
+      if(categories[cat])
+      {
+        item = categories[cat][0] as ILauncher.IItemOptions;
+      }
       if(item==null) return
       if(this.is_project && item.command == "terminal:create-new")
       {
@@ -306,7 +311,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     return (
       <div className="jp-Launcher-body">
         <div className="jp-Launcher-content">
-          <ProjectHeader is_project={this.is_project} project_name={this.project_name} stack_name={this.stack_name}/>
+          <ProjectHeader is_project={this.is_project} project_name={this.project_name} stack={this.release} platform={this.platform}/>
           <div className="jp-Launcher-cwd">
           </div>
           {sections}
@@ -323,7 +328,8 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
 
   private is_project:boolean;
   private project_name:string;
-  private stack_name:string;
+  private release:string;
+  private platform:string;
   private readme:string | null;
   public service_manager:ServiceManager
 //  private spinner:Spinner;
