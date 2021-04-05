@@ -1,5 +1,6 @@
-// Copyright (c) Jupyter Development Team.
+// Copyright (c) SWAN Development Team.
 // Distributed under the terms of the Modified BSD License.
+// Auhtor: Omar.Zapata@cern.ch 2021, modified from original launcher.
 
 import {
   ILabShell,
@@ -73,15 +74,13 @@ function activate(
       launcher.service_manager = serviceManager;
       launcher.title.icon = launcherIcon;
       launcher.title.label = 'SWAN Launcher';
-    
       const main = new MainAreaWidget({ content: launcher });
-
+      
       // If there are any other widgets open, remove the launcher close icon.
       main.title.closable = !!toArray(labShell.widgets('main')).length;
       main.id = id;
-
       labShell.add(main, 'main', { activate: args['activate'] as boolean });
-
+      
       labShell.layoutModified.connect(() => {
         // If there is only a launcher open, remove the close icon.
         main.title.closable = toArray(labShell.widgets('main')).length > 1;
@@ -89,7 +88,8 @@ function activate(
       if (palette) {
         palette.addItem({ command: CommandIDs.create_launcher, category: 'SWAN' });
       }
-    
+      // await main.revealed;
+
       return main;
     }
   });

@@ -143,13 +143,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   set pending(value: boolean) {
     this._pending = value;
   }
-  
-  /**
-   * Launch dialog to change the stack of the project.
-   */
-  protected changeStack(): void {
-    console.log('call dialogs and API procedures TODO!')
-  }
+
 
   async checkPath(cwd:string):Promise<void> {
       const info = await this.contentRequest(cwd);
@@ -160,8 +154,10 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       {
         const project_data = project_info['project_data'] as JSONObject;
         this.project_name = project_data['name'] as string; 
+        this.stack = project_data['stack'] as string;
         this.release = project_data['release'] as string;
         this.platform = project_data['platform'] as string;
+        this.user_script = project_data['user_script'] as string;
         if ('readme' in project_data)
         {
           this.readme = project_data['readme'] as string;
@@ -311,7 +307,14 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     return (
       <div className="jp-Launcher-body">
         <div className="jp-Launcher-content">
-          <ProjectHeader is_project={this.is_project} project_name={this.project_name} stack={this.release} platform={this.platform}/>
+          <ProjectHeader is_project={this.is_project} 
+                         name={this.project_name} 
+                         stack={this.stack} 
+                         release={this.release} 
+                         platform={this.platform}  
+                         user_script={this.user_script}  
+                         commands={this._commands}
+                         launcher={this}/>
           <div className="jp-Launcher-cwd">
           </div>
           {sections}
@@ -328,11 +331,12 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
 
   private is_project:boolean;
   private project_name:string;
+  private stack:string;
   private release:string;
   private platform:string;
+  private user_script:string;
   private readme:string | null;
   public service_manager:ServiceManager
-//  private spinner:Spinner;
 
 }
 
