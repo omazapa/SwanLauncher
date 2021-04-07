@@ -6,7 +6,6 @@ import {
   VDomRenderer,
 } from '@jupyterlab/apputils';
 
-//import {Spinner} from '@jupyterlab/apputils';
 
 import { classes, LabIcon } from '@jupyterlab/ui-components';
 
@@ -123,7 +122,17 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       this.update();  
      })
   }
-
+  // public setPath(cwd:string)
+  // {
+  //   //this.cwd = cwd;
+  //   return this._commands.execute('filebrowser:go-to-path',{
+  //     path:this._cwd,
+  //     showBrowser:true
+  //   }).then(()=>{
+  //     this.service_manager.kernelspecs.refreshSpecs();
+  //     this.update();  
+  //    })
+  // }
   set cwd(value: string) {
     if(this.isVisible)
     {

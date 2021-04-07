@@ -31,7 +31,7 @@ namespace CommandIDs {
 /**
  * A service providing an interface to the the launcher.
  */
-const ProjectLauncher: JupyterFrontEndPlugin<ILauncher> = {
+const plugin: JupyterFrontEndPlugin<ILauncher> = {
   activate,
   id: '@swan/launcher-project:plugin',
   requires: [ILabShell],
@@ -44,8 +44,7 @@ const ProjectLauncher: JupyterFrontEndPlugin<ILauncher> = {
  * Export the plugin as default.
  */
 export {SWANLauncher};
-export default ProjectLauncher;
-
+export default plugin;
 /**
  * Activate the launcher.
  */
@@ -54,6 +53,7 @@ function activate(
   labShell: ILabShell,
   palette: ICommandPalette | null
 ): ILauncher {
+  console.log("SWAN Launcher Activated");
   const { serviceManager, commands } = app;
   const model = new LauncherModel();
   var launcher = null;
