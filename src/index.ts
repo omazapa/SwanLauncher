@@ -53,7 +53,7 @@ function activate(
   labShell: ILabShell,
   palette: ICommandPalette | null
 ): ILauncher {
-  console.log("SWAN Launcher Activated");
+  console.log('JupyterLab extension swanlauncher is activated!');
   const { serviceManager, commands } = app;
   const model = new LauncherModel();
   var launcher = null;
