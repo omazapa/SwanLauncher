@@ -61,7 +61,6 @@ function activate(
     icon:cernboxIcon,
     label: 'Share',
     execute: (args: JSONObject) => {
-      console.dir('CWD = '+JSON.stringify(args))
       const cwd = args['cwd'] ? String(args['cwd']) : '';
       const id = `swan-launcher-${Private.id++}`;
       const callback = (item: Widget) => {
@@ -93,44 +92,6 @@ function activate(
       return main;
     }
   });
-
-//  let command_cernbox:ILauncher.IItemOptions = {
-//    command:'launcher:create',
-//    category:'CERNBox'//,
-    //kernelIconUrl:"swan:create-project"
-//  }
-//  model.add(command_cernbox)
-
-/*  commands.addCommand(CommandIDs.create_project, {
-    icon:swanProjectIcon,
-    label: 'New',
-    execute: (args: JSONObject) => {
-      //TODO!
-    }
-  })
-  */
-  commands.addCommand(CommandIDs.import_project, {
-    icon:swanProjectImportIcon,
-    label: 'Import',
-    execute: (args: JSONObject) => {
-      //TODO!
-    }
-  })
-
-/*  let command_create:ILauncher.IItemOptions = {
-    command:'swan:create_project',
-    category:'Project',
-    rank:1
-  }
-*/
-  let command_import:ILauncher.IItemOptions = {
-    command:'swan:import_project',
-    category:'Project'
-  }
-
-  //model.add(command_create)
-  model.add(command_import)
-
 
   if (palette) {
     palette.addItem({ command: CommandIDs.create_launcher, category: 'Launcher' });
