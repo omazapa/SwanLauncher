@@ -16,7 +16,8 @@ import { toArray } from '@lumino/algorithm';
 import { JSONObject } from '@lumino/coreutils';
 import { Widget } from '@lumino/widgets';
 
-import {cernboxIcon,swanProjectImportIcon} from './icons'
+//import {cernboxIcon,swanProjectImportIcon} from './icons'
+import {cernboxIcon} from './icons';
 
 
 /**

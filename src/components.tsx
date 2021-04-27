@@ -64,7 +64,7 @@ export function ProjectHeader(props:SWANProjectIOptions) {
           <h2 className="jp-Launcher-sectionTitle">{props.name}</h2>
         </td>
         <td style={{ textAlign: "right", color: "#808080"}}>
-          {props.stack} ({props.platform})
+          {props.release} ({props.platform})
         </td>
         <td style={{ textAlign: "right", width: "24px", height:"24px", color: "#808080"}}>
           <div className="" id="swan_config_button" style={{ width: "26px",height:"26px", borderRadius: '85x'}} onClick={changeStack}>
