@@ -101,7 +101,7 @@ export function ProjectHeader(props:SWANProjectIOptions) {
       </div>
       <div className="jp-Launcher-cardContainer">
       </div>
-      <ReactMarkdown source={props.readme as string}></ReactMarkdown>
+      <ReactMarkdown>{props.readme as string}</ReactMarkdown>
     </div>
       );
     }else
