@@ -15,39 +15,22 @@ export type SWANProjectIOptions = {
     platform?:string | "";
     user_script?:string | "";
     readme?:string | null;
-    commands?: CommandRegistry;
+    commands?:CommandRegistry;
     launcher?:SWANLauncher;
   }
 
   
 export function ProjectHeader(props:SWANProjectIOptions) {
-    function changeStack(){
-       return props.commands?.execute('swan:edit-project-dialog',{
+  function changeStack(){
+       props.commands?.execute('swan:edit-project-dialog',{
           name:props.name,
           stack:props.stack,
           release:props.release,
           platform:props.platform,
           user_script:props.user_script
-        })
-        
-        //.then((args)=>{
-          // console.log("updating path");
-          // console.log(props.launcher?.cwd);
-          // console.log(args);
-          // this._commands.execute('filebrowser:go-to-path',{
-          //   path:this._cwd,
-          //   showBrowser:true
-          // }).then(()=>{
-          //   this.service_manager.kernelspecs.refreshSpecs();
-          //   this.update();  
-          //  })
-          //props.launcher?.setPath(args["project_dir"])
-    
-          //console.log("updating kernels");
-          //await props.launcher?.service_manager.kernelspecs.refreshSpecs();
-          //props.launcher?.update();  
-          // console.log("stopping spinner");
-        // })
+        }).catch((message)=>{
+          console.log(message);
+        });
 
     }
     return (
