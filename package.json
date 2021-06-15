@@ -1,6 +1,6 @@
 {
   "name": "@swan/launcher",
-  "version": "2.2.4",
+  "version": "0.0.1",
   "description": "SWAN JupyterLab - Launcher Panel",
   "homepage": "https://github.com/ozapatam/jupyterlab-swanlauncher",
   "bugs": {
