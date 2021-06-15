@@ -11,7 +11,7 @@ jlpm
 jlpm build
 # Link your development version of the extension with JupyterLab
 jupyter labextension link .
-cd ~
+#cd ~
 #jupyter lab --watch 
-jupyter lab
-cd -
+#jupyter lab
+#cd -

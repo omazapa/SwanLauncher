@@ -13,7 +13,7 @@ import {  SWANLauncher } from './launcher'
 import { launcherIcon } from '@jupyterlab/ui-components';
 
 import { toArray } from '@lumino/algorithm';
-import { JSONObject } from '@lumino/coreutils';
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { Widget } from '@lumino/widgets';
 
 //import {cernboxIcon,swanProjectImportIcon} from './icons'
@@ -61,7 +61,7 @@ function activate(
   commands.addCommand(CommandIDs.create_launcher, {
     icon:cernboxIcon,
     label: 'Share',
-    execute: (args: JSONObject) => {
+    execute: (args: ReadonlyPartialJSONObject) => {
       const cwd = args['cwd'] ? String(args['cwd']) : '';
       const id = `swan-launcher-${Private.id++}`;
       const callback = (item: Widget) => {

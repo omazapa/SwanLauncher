@@ -118,7 +118,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
        path:this._cwd,
        showBrowser:true
      }).then(()=>{
-      this.service_manager.kernelspecs.refreshSpecs();
+      this.service_manager?.kernelspecs.refreshSpecs();
       this.update();  
      })
   }
@@ -174,7 +174,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         {
           this.readme = null;
         }
-        this.service_manager.kernelspecs.refreshSpecs();
+        this.service_manager?.kernelspecs.refreshSpecs();
       }
       this.update();
     }
@@ -338,14 +338,14 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private _pending = false;
   private _cwd = '';
 
-  private is_project:boolean;
-  private project_name:string;
-  private stack:string;
-  private release:string;
-  private platform:string;
-  private user_script:string;
-  private readme:string | null;
-  public service_manager:ServiceManager
+  private is_project:boolean = false;
+  private project_name:string = "";
+  private stack:string = "";
+  private release:string = "";
+  private platform:string = "";
+  private user_script:string = "";
+  private readme:string | null = "";
+  public service_manager:ServiceManager | null = null;
 
 }
 
