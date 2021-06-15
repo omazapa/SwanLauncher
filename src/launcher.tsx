@@ -97,6 +97,15 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     return this._cwd;
   }
 
+  set cwd(value: string) {
+    if (this.isVisible) {
+      this._cwd = value;
+      this.checkPath(value).then(rvalue => {
+        this.update();
+      });
+    }
+  }
+
   protected onAfterShow(): any {
     this._commands
       .execute('filebrowser:go-to-path', {
@@ -107,25 +116,6 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         this.service_manager?.kernelspecs.refreshSpecs();
         this.update();
       });
-  }
-  // public setPath(cwd:string)
-  // {
-  //   //this.cwd = cwd;
-  //   return this._commands.execute('filebrowser:go-to-path',{
-  //     path:this._cwd,
-  //     showBrowser:true
-  //   }).then(()=>{
-  //     this.service_manager.kernelspecs.refreshSpecs();
-  //     this.update();
-  //    })
-  // }
-  set cwd(value: string) {
-    if (this.isVisible) {
-      this._cwd = value;
-      this.checkPath(value).then(rvalue => {
-        this.update();
-      });
-    }
   }
 
   /**
@@ -183,13 +173,13 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         categories[cat] = [];
       }
       if (this.is_project) {
-        if (cat == 'Notebook' || cat == 'Console') {
+        if (cat === 'Notebook' || cat === 'Console') {
           categories[cat].push(item);
         } else {
           categories[cat].push(item);
         }
       } else {
-        if (cat != 'Notebook') {
+        if (cat !== 'Notebook') {
           categories[cat].push(item);
         }
       }
@@ -222,11 +212,11 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     // Now create the sections for each category
     orderedCategories.forEach(cat => {
       if (this.is_project) {
-        if (cat == 'Project' || cat == 'Projects') {
+        if (cat === 'Project' || cat === 'Projects') {
           return;
         }
       } else {
-        if (cat == 'Notebook' || cat == 'Console' || cat == 'CERNBox') {
+        if (cat === 'Notebook' || cat === 'Console' || cat === 'CERNBox') {
           return;
         }
       }
@@ -235,14 +225,14 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       if (categories[cat]) {
         item = categories[cat][0] as ILauncher.IItemOptions;
       }
-      if (item == null) {
+      if (item === null) {
         return;
       }
-      if (this.is_project && item.command == 'terminal:create-new') {
+      if (this.is_project && item.command === 'terminal:create-new') {
         item.args = {
           initialCommand: 'swan_bash ' + this.project_name + '; exit 0'
         };
-      } else if (item.command == 'terminal:create-new') {
+      } else if (item.command === 'terminal:create-new') {
         item.args = { initialCommand: '' };
       }
       const args = { ...item.args, cwd: this.cwd };
@@ -256,7 +246,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       let icon = _icon === iconClass ? undefined : _icon;
 
       if (cat in categories) {
-        if (cat == 'Projects') {
+        if (cat === 'Projects') {
           //special icon for projects not associated to the launcher icon
           icon = swanProjectsIcon;
         }
