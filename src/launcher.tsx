@@ -1,19 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  showErrorMessage,
-  VDomRenderer,
-} from '@jupyterlab/apputils';
-
+import { showErrorMessage, VDomRenderer } from '@jupyterlab/apputils';
 
 import { classes, LabIcon } from '@jupyterlab/ui-components';
 
-import {
-  map,
-  each,
-  toArray
-} from '@lumino/algorithm';
+import { map, each, toArray } from '@lumino/algorithm';
 
 import { CommandRegistry } from '@lumino/commands';
 
@@ -25,15 +17,14 @@ import * as React from 'react';
 
 import { ILauncher, LauncherModel } from '@jupyterlab/launcher';
 
+import { ProjectHeader, ProjectReadme } from './components';
 
-import {ProjectHeader, ProjectReadme} from './components'
-
-import {swanProjectsIcon} from './icons'
+import { swanProjectsIcon } from './icons';
 import { JSONObject } from '@lumino/coreutils';
 
 import { request } from './request';
 
-import {ServiceManager} from '@jupyterlab/services'
+import { ServiceManager } from '@jupyterlab/services';
 
 /**
  * The class name added to Launcher instances.
@@ -43,14 +34,13 @@ const LAUNCHER_CLASS = 'jp-Launcher';
 /**
  * The known categories of launcher items and their default ordering.
  */
-var KNOWN_CATEGORIES = [];
+let KNOWN_CATEGORIES = [];
 
 /**
  * These launcher item categories are known to have kernels, so the kernel icons
  * are used.
  */
-var KERNEL_CATEGORIES = ['Notebook','Console'];
-
+const KERNEL_CATEGORIES = ['Notebook', 'Console'];
 
 /**
  * A virtual-DOM-based widget for the Launcher.
@@ -67,31 +57,25 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this._commands = options.commands;
     this.addClass(LAUNCHER_CLASS);
 
-    this.checkPath(options.cwd).then(rvalue =>{
+    this.checkPath(options.cwd).then(rvalue => {
       this.update();
     });
-
   }
 
-
-  protected contentRequest(cwd:string):any
-  {
+  protected contentRequest(cwd: string): any {
     try {
-      return request<any>('api/contents/'+ cwd, {
+      return request<any>('api/contents/' + cwd, {
         method: 'GET'
       }).then(rvalue => {
-          return rvalue;
+        return rvalue;
       });
     } catch (reason) {
-      console.error(
-        `Error on GET 'api/contents'+ ${cwd}.\n${reason}`
-      );
+      console.error(`Error on GET 'api/contents'+ ${cwd}.\n${reason}`);
     }
   }
 
-  protected projectInfoRequest(project:string):any
-  {
-    const dataToSend = {'path':project};
+  protected projectInfoRequest(project: string): any {
+    const dataToSend = { path: project };
     try {
       return request<any>('swan/project/info', {
         body: JSON.stringify(dataToSend),
@@ -113,14 +97,16 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     return this._cwd;
   }
 
-  protected onAfterShow():any{
-    this._commands.execute('filebrowser:go-to-path',{
-       path:this._cwd,
-       showBrowser:true
-     }).then(()=>{
-      this.service_manager?.kernelspecs.refreshSpecs();
-      this.update();  
-     })
+  protected onAfterShow(): any {
+    this._commands
+      .execute('filebrowser:go-to-path', {
+        path: this._cwd,
+        showBrowser: true
+      })
+      .then(() => {
+        this.service_manager?.kernelspecs.refreshSpecs();
+        this.update();
+      });
   }
   // public setPath(cwd:string)
   // {
@@ -130,14 +116,13 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   //     showBrowser:true
   //   }).then(()=>{
   //     this.service_manager.kernelspecs.refreshSpecs();
-  //     this.update();  
+  //     this.update();
   //    })
   // }
   set cwd(value: string) {
-    if(this.isVisible)
-    {
+    if (this.isVisible) {
       this._cwd = value;
-      this.checkPath(value).then(rvalue =>{
+      this.checkPath(value).then(rvalue => {
         this.update();
       });
     }
@@ -153,47 +138,40 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this._pending = value;
   }
 
+  async checkPath(cwd: string): Promise<void> {
+    const info = await this.contentRequest(cwd);
 
-  async checkPath(cwd:string):Promise<void> {
-      const info = await this.contentRequest(cwd);
-    
-      this.is_project=info.is_project;
-      const project_info = await this.projectInfoRequest(info.path);
-      if(this.is_project)
-      {
-        const project_data = project_info['project_data'] as JSONObject;
-        this.project_name = project_data['name'] as string; 
-        this.stack = project_data['stack'] as string;
-        this.release = project_data['release'] as string;
-        this.platform = project_data['platform'] as string;
-        this.user_script = project_data['user_script'] as string;
-        if ('readme' in project_data)
-        {
-          this.readme = project_data['readme'] as string;
-        }else
-        {
-          this.readme = null;
-        }
-        this.service_manager?.kernelspecs.refreshSpecs();
+    this.is_project = info.is_project;
+    const project_info = await this.projectInfoRequest(info.path);
+    if (this.is_project) {
+      const project_data = project_info['project_data'] as JSONObject;
+      this.project_name = project_data['name'] as string;
+      this.stack = project_data['stack'] as string;
+      this.release = project_data['release'] as string;
+      this.platform = project_data['platform'] as string;
+      this.user_script = project_data['user_script'] as string;
+      if ('readme' in project_data) {
+        this.readme = project_data['readme'] as string;
+      } else {
+        this.readme = null;
       }
-      this.update();
+      this.service_manager?.kernelspecs.refreshSpecs();
     }
+    this.update();
+  }
 
   /**
    * Render the launcher to virtual DOM nodes.
    */
   protected render(): React.ReactElement<any> | null {
-    
-
     // Bail if there is no model.
     if (!this.model) {
       return null;
     }
-    if(this.is_project)
-    {
-      KNOWN_CATEGORIES=['Notebook','Console','Other']
-    }else{
-      KNOWN_CATEGORIES=['Project']
+    if (this.is_project) {
+      KNOWN_CATEGORIES = ['Notebook', 'Console', 'Other'];
+    } else {
+      KNOWN_CATEGORIES = ['Project'];
     }
     // First group-by categories
     const categories = Object.create(null);
@@ -204,18 +182,16 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       if (!(cat in categories)) {
         categories[cat] = [];
       }
-      if(this.is_project)
-      {
-        if(cat == 'Notebook' || cat =='Console')
-        {
-            categories[cat].push(item);
-        }else
-        {
+      if (this.is_project) {
+        if (cat == 'Notebook' || cat == 'Console') {
+          categories[cat].push(item);
+        } else {
           categories[cat].push(item);
         }
-      }else{
-        if(cat!="Notebook")
+      } else {
+        if (cat != 'Notebook') {
           categories[cat].push(item);
+        }
       }
     });
     // Within each category sort by rank
@@ -245,43 +221,44 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
 
     // Now create the sections for each category
     orderedCategories.forEach(cat => {
-      if(this.is_project)
-      {
-        if(cat=='Project' || cat=='Projects')
-        return
-      }
-      else
-      {
-        if(cat=='Notebook' || cat=='Console' || cat=='CERNBox')
-        return
+      if (this.is_project) {
+        if (cat == 'Project' || cat == 'Projects') {
+          return;
+        }
+      } else {
+        if (cat == 'Notebook' || cat == 'Console' || cat == 'CERNBox') {
+          return;
+        }
       }
 
       let item = null;
-      if(categories[cat])
-      {
+      if (categories[cat]) {
         item = categories[cat][0] as ILauncher.IItemOptions;
       }
-      if(item==null) return
-      if(this.is_project && item.command == "terminal:create-new")
-      {
-        item.args = {initialCommand:'swan_bash '+this.project_name+'; exit 0'}
-      }else if(item.command == "terminal:create-new"){
-        item.args = {initialCommand:''}
+      if (item == null) {
+        return;
+      }
+      if (this.is_project && item.command == 'terminal:create-new') {
+        item.args = {
+          initialCommand: 'swan_bash ' + this.project_name + '; exit 0'
+        };
+      } else if (item.command == 'terminal:create-new') {
+        item.args = { initialCommand: '' };
       }
       const args = { ...item.args, cwd: this.cwd };
       const kernel = KERNEL_CATEGORIES.indexOf(cat) > -1;
 
       // DEPRECATED: remove _icon when lumino 2.0 is adopted
       // if icon is aliasing iconClass, don't use it
-      
+
       const iconClass = this._commands.iconClass(item.command, args);
       const _icon = this._commands.icon(item.command, args);
       let icon = _icon === iconClass ? undefined : _icon;
 
       if (cat in categories) {
-        if(cat =='Projects')//special icon for projects not associated to the launcher icon
-        {
-          icon=swanProjectsIcon
+        if (cat == 'Projects') {
+          //special icon for projects not associated to the launcher icon
+          icon = swanProjectsIcon;
         }
         section = (
           <div className="jp-Launcher-section" key={cat}>
@@ -316,20 +293,21 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     return (
       <div className="jp-Launcher-body">
         <div className="jp-Launcher-content">
-          <ProjectHeader is_project={this.is_project} 
-                         name={this.project_name} 
-                         stack={this.stack} 
-                         release={this.release} 
-                         platform={this.platform}  
-                         user_script={this.user_script}  
-                         commands={this._commands}
-                         launcher={this}/>
-          <div className="jp-Launcher-cwd">
-          </div>
+          <ProjectHeader
+            is_project={this.is_project}
+            name={this.project_name}
+            stack={this.stack}
+            release={this.release}
+            platform={this.platform}
+            user_script={this.user_script}
+            commands={this._commands}
+            launcher={this}
+          />
+          <div className="jp-Launcher-cwd"></div>
           {sections}
-          <ProjectReadme is_project={this.is_project} readme={this.readme}/>
+          <ProjectReadme is_project={this.is_project} readme={this.readme} />
+        </div>
       </div>
-      </div >
     );
   }
 
@@ -338,15 +316,14 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private _pending = false;
   private _cwd = '';
 
-  private is_project:boolean = false;
-  private project_name:string = "";
-  private stack:string = "";
-  private release:string = "";
-  private platform:string = "";
-  private user_script:string = "";
-  private readme:string | null = "";
-  public service_manager:ServiceManager | null = null;
-
+  private is_project = false;
+  private project_name = '';
+  private stack = '';
+  private release = '';
+  private platform = '';
+  private user_script = '';
+  private readme: string | null = '';
+  public service_manager: ServiceManager | null = null;
 }
 
 /**
@@ -432,17 +409,17 @@ function Card(
           item.kernelIconUrl ? (
             <img src={item.kernelIconUrl} className="jp-Launcher-kernelIcon" />
           ) : (
-              <div className="jp-LauncherCard-noKernelIcon">
-                {label[0].toUpperCase()}
-              </div>
-            )
+            <div className="jp-LauncherCard-noKernelIcon">
+              {label[0].toUpperCase()}
+            </div>
+          )
         ) : (
-            <LabIcon.resolveReact
-              icon={icon}
-              iconClass={classes(iconClass, 'jp-Icon-cover')}
-              stylesheet="launcherCard"
-            />
-          )}
+          <LabIcon.resolveReact
+            icon={icon}
+            iconClass={classes(iconClass, 'jp-Icon-cover')}
+            stylesheet="launcherCard"
+          />
+        )}
       </div>
       <div className="jp-LauncherCard-label" title={title}>
         <p>{label}</p>
