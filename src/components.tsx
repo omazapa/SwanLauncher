@@ -19,7 +19,7 @@ export type SWANProjectIOptions = {
   launcher?: SWANLauncher;
 };
 
-export function ProjectHeader(props: SWANProjectIOptions): Element {
+export function ProjectHeader(props: SWANProjectIOptions): JSX.Element {
   function changeStack() {
     props.commands
       ?.execute('swan:edit-project-dialog', {
@@ -92,7 +92,7 @@ export function ProjectHeader(props: SWANProjectIOptions): Element {
   );
 }
 
-export function ProjectReadme(props: SWANProjectIOptions): Element {
+export function ProjectReadme(props: SWANProjectIOptions): JSX.Element {
   if (props.is_project && props.readme !== null) {
     return (
       <div
