@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/ozapatam/jupyterlab-swanlauncher.git"
   },
-  "license": "BSD-3-Clause",
+  "license": "AGPL-3.0",
   "author": "SWAN Admins",
   "files": [
     "lib/*.d.ts",
