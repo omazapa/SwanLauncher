@@ -17,7 +17,7 @@ import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { Widget } from '@lumino/widgets';
 
 //import {cernboxIcon,swanProjectImportIcon} from './icons'
-import { cernboxIcon } from './icons';
+// import { cernboxIcon } from './icons';
 
 /**
  * The command IDs used by the launcher plugin.
@@ -58,8 +58,8 @@ function activate(
   const model = new LauncherModel();
   let launcher = null;
   commands.addCommand(CommandIDs.create_launcher, {
-    icon: cernboxIcon,
-    label: 'Share',
+    icon: launcherIcon,
+    label: 'SWAN Launcher',
     execute: (args: ReadonlyPartialJSONObject) => {
       const cwd = args['cwd'] ? String(args['cwd']) : '';
       const id = `swan-launcher-${Private.id++}`;
@@ -113,5 +113,5 @@ namespace Private {
   /**
    * The incrementing id used for launcher widgets.
    */
-  export let id = 0;
+  export const id = 0;
 }

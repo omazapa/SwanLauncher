@@ -100,20 +100,18 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   set cwd(value: string) {
     if (this.isVisible) {
       this._cwd = value;
-      this.checkPath(value).then(rvalue => {
-        this.update();
-      });
+      this.checkPath(value);
     }
   }
 
-  protected onAfterShow(): any {
-    this._commands
+  protected async onAfterShow(): Promise<any> {
+    await this._commands
       .execute('filebrowser:go-to-path', {
         path: this._cwd,
         showBrowser: true
       })
-      .then(() => {
-        this.service_manager?.kernelspecs.refreshSpecs();
+      .then(async () => {
+        await this.service_manager?.kernelspecs.refreshSpecs();
         this.update();
       });
   }
@@ -145,7 +143,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       } else {
         this.readme = null;
       }
-      this.service_manager?.kernelspecs.refreshSpecs();
+      await this.service_manager?.kernelspecs.refreshSpecs();
     }
     this.update();
   }
