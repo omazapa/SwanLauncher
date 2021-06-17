@@ -26,6 +26,8 @@ import { request } from './request';
 
 import { ServiceManager } from '@jupyterlab/services';
 
+import { Spinner } from '@jupyterlab/apputils';
+
 /**
  * The class name added to Launcher instances.
  */
@@ -56,10 +58,25 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this._callback = options.callback;
     this._commands = options.commands;
     this.addClass(LAUNCHER_CLASS);
+    this._spinner = new Spinner();
 
     this.checkPath(options.cwd).then(rvalue => {
       this.update();
     });
+  }
+
+  protected startSpinner(): void {
+    //const node = document.getElementById('jp-main-dock-panel');
+    const node = this.node;
+    node?.appendChild(this._spinner.node);
+    node?.focus();
+    this._spinner.activate();
+    this._spinner.show();
+    this._spinner.node.focus();
+  }
+
+  protected stopSpinner(): void {
+    this._spinner.hide();
   }
 
   protected contentRequest(cwd: string): any {
@@ -127,6 +144,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
 
   async checkPath(cwd: string): Promise<void> {
+    this.startSpinner();
     const info = await this.contentRequest(cwd);
 
     this.is_project = info.is_project;
@@ -145,6 +163,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       }
       await this.service_manager?.kernelspecs.refreshSpecs();
     }
+    this.stopSpinner();
     this.update();
   }
 
@@ -303,6 +322,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private _callback: (widget: Widget) => void;
   private _pending = false;
   private _cwd = '';
+  private _spinner: Spinner;
 
   private is_project = false;
   private project_name = '';

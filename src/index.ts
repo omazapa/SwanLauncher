@@ -62,7 +62,7 @@ function activate(
     label: 'SWAN Launcher',
     execute: (args: ReadonlyPartialJSONObject) => {
       const cwd = args['cwd'] ? String(args['cwd']) : '';
-      const id = `swan-launcher-${Private.id++}`;
+      let id = `swan-launcher-${Private.id++}`;
       const callback = (item: Widget) => {
         labShell.add(item, 'main', { ref: id });
       };
@@ -113,5 +113,5 @@ namespace Private {
   /**
    * The incrementing id used for launcher widgets.
    */
-  export const id = 0;
+  export let id = 0;
 }
