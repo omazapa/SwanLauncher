@@ -93,7 +93,7 @@ export function ProjectHeader(props: SWANProjectIOptions): JSX.Element {
 }
 
 export function ProjectReadme(props: SWANProjectIOptions): JSX.Element {
-  if (props.is_project && props.readme !== null) {
+  if (props.is_project && props.readme !== undefined) {
     return (
       <div
         className="jp-Launcher-section"

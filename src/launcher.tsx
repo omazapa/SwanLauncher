@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { showErrorMessage, VDomRenderer } from '@jupyterlab/apputils';
+import { showErrorMessage, VDomRenderer , Dialog} from '@jupyterlab/apputils';
 
 import { classes, LabIcon } from '@jupyterlab/ui-components';
 
@@ -20,13 +20,13 @@ import { ILauncher, LauncherModel } from '@jupyterlab/launcher';
 import { ProjectHeader, ProjectReadme } from './components';
 
 import { swanProjectsIcon } from './icons';
-import { JSONObject } from '@lumino/coreutils';
 
 import { request } from './request';
 
 import { ServiceManager } from '@jupyterlab/services';
 
 import { Spinner } from '@jupyterlab/apputils';
+import { JSONObject } from '@lumino/coreutils';
 
 /**
  * The class name added to Launcher instances.
@@ -43,6 +43,25 @@ let KNOWN_CATEGORIES = [];
  * are used.
  */
 const KERNEL_CATEGORIES = ['Notebook', 'Console'];
+
+/**
+ * SWAN Project options from .swanproject file plus readme 
+ * this is required to validated that the project file is not corrupted,
+ * two special cases are the readme and name that is not part of the the .swanproject file, 
+ * but it is sent in the request.
+ */
+  export interface ISWANProjectOptions{
+  name?: string;
+  stack?: string;
+  release?: string;
+  platform?: string;
+  user_script?: string;
+  readme?: string | null | undefined;
+  python2?: any;
+  python3?: any;
+  kernel_dirs?: string[];
+}
+
 
 /**
  * A virtual-DOM-based widget for the Launcher.
@@ -139,8 +158,31 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   get pending(): boolean {
     return this._pending;
   }
+
   set pending(value: boolean) {
     this._pending = value;
+  }
+
+  protected isValidProject(project_data:JSONObject):boolean {    
+    for(const tag in this.project_tags)
+    {
+      if (!(this.project_tags[tag] in project_data)) {
+        console.log(this.project_tags[tag])
+        return false;
+      }
+    }
+    return true; 
+  }
+  protected getProjectMissingTags(project_data:JSONObject):string[] {
+    let missing_tags:string[] = []
+    for(const tag in this.project_tags)
+    {
+      if (!(tag in project_data))
+      { 
+        missing_tags.push(tag)
+      }
+    }
+    return missing_tags;
   }
 
   async checkPath(cwd: string): Promise<void> {
@@ -149,19 +191,23 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
 
     this.is_project = info.is_project;
     const project_info = await this.projectInfoRequest(info.path);
+    // console.log(project_info);
     if (this.is_project) {
-      const project_data = project_info['project_data'] as JSONObject;
-      this.project_name = project_data['name'] as string;
-      this.stack = project_data['stack'] as string;
-      this.release = project_data['release'] as string;
-      this.platform = project_data['platform'] as string;
-      this.user_script = project_data['user_script'] as string;
-      if ('readme' in project_data) {
-        this.readme = project_data['readme'] as string;
-      } else {
-        this.readme = null;
+      const project_data = project_info['project_data'] as ISWANProjectOptions;
+      if(this.isValidProject(project_data as JSONObject))
+      {
+        this.project_options = project_data;
+        console.log(this.project_options);
+        await this.service_manager?.kernelspecs.refreshSpecs();  
+      }else{
+        this.project_options = project_data;
+        let missing_tags = this.getProjectMissingTags(project_data as JSONObject);
+        var available_tags = this.project_tags.filter((item) => !missing_tags.includes(item));
+        showErrorMessage("Project Error:",
+        "The configuration file of the project (.swanproject) is currupted, missing fields are:"+available_tags+". \nThe project can not be opened, do you want to open a Dialog to edit it?",
+        [Dialog.cancelButton(),
+          Dialog.okButton()])
       }
-      await this.service_manager?.kernelspecs.refreshSpecs();
     }
     this.stopSpinner();
     this.update();
@@ -247,7 +293,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       }
       if (this.is_project && item.command === 'terminal:create-new') {
         item.args = {
-          initialCommand: 'swan_bash ' + this.project_name + '; exit 0'
+          initialCommand: 'swan_bash ' + this.project_options.name + '; exit 0'
         };
       } else if (item.command === 'terminal:create-new') {
         item.args = { initialCommand: '' };
@@ -302,17 +348,17 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         <div className="jp-Launcher-content">
           <ProjectHeader
             is_project={this.is_project}
-            name={this.project_name}
-            stack={this.stack}
-            release={this.release}
-            platform={this.platform}
-            user_script={this.user_script}
+            name={this.project_options.name}
+            stack={this.project_options.stack}
+            release={this.project_options.release}
+            platform={this.project_options.platform}
+            user_script={this.project_options.user_script}
             commands={this._commands}
             launcher={this}
           />
           <div className="jp-Launcher-cwd"></div>
           {sections}
-          <ProjectReadme is_project={this.is_project} readme={this.readme} />
+          <ProjectReadme is_project={this.is_project} readme={this.project_options.readme} />
         </div>
       </div>
     );
@@ -325,12 +371,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private _spinner: Spinner;
 
   private is_project = false;
-  private project_name = '';
-  private stack = '';
-  private release = '';
-  private platform = '';
-  private user_script = '';
-  private readme: string | null = '';
+  private project_options: ISWANProjectOptions = {name:'',stack:'',release:'',platform:'',user_script:'',readme:''};
+  //tags to be validated, readme and user_script are not needed, they are optional files.
+  private project_tags:string[] = ['name','stack','release','platform','python2','python3','kernel_dirs'] 
   public service_manager: ServiceManager | null = null;
 }
 
