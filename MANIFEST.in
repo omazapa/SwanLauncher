@@ -6,6 +6,7 @@ include pyproject.toml
 include package.json
 include install.json
 include ts*.json
+include typedoc.json
 include yarn.lock
 
 graft swanlauncher/labextension
