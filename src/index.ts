@@ -1,5 +1,4 @@
 // Copyright (c) SWAN Development Team.
-// Distributed under the terms of the Modified BSD License.
 // Auhtor: Omar.Zapata@cern.ch 2021, modified from original launcher.
 
 import {
@@ -15,9 +14,6 @@ import { launcherIcon } from '@jupyterlab/ui-components';
 import { toArray } from '@lumino/algorithm';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { Widget } from '@lumino/widgets';
-
-//import {cernboxIcon,swanProjectImportIcon} from './icons'
-// import { cernboxIcon } from './icons';
 
 /**
  * The command IDs used by the launcher plugin.
@@ -62,7 +58,7 @@ function activate(
     label: 'SWAN Launcher',
     execute: (args: ReadonlyPartialJSONObject) => {
       const cwd = args['cwd'] ? String(args['cwd']) : '';
-      let id = `swan-launcher-${Private.id++}`;
+      const id = `swan-launcher-${Private.id++}`;
       const callback = (item: Widget) => {
         labShell.add(item, 'main', { ref: id });
       };
@@ -90,7 +86,6 @@ function activate(
           category: 'SWAN'
         });
       }
-      // await main.revealed;
 
       return main;
     }
@@ -113,5 +108,5 @@ namespace Private {
   /**
    * The incrementing id used for launcher widgets.
    */
-  export let id = 0;
+  export let id = 0; // eslint-disable-line 
 }
