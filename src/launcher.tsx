@@ -63,6 +63,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this.checkPath(options.cwd).then(rvalue => {
       this.update();
     });
+    this.stacksRequest().then((info:any) =>{
+      this.stacks_path = info["stacks"]["path"];
+    })
   }
 
   protected startSpinner(): void {
@@ -88,6 +91,18 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       });
     } catch (reason) {
       console.error(`Error on GET 'api/contents'+ ${cwd}.\n${reason}`);
+    }
+  }
+
+  protected stacksRequest(): any {
+    try {
+      return request<any>('swan/stacks/info', {
+        method: 'GET'
+      }).then(rvalue => {
+        return rvalue;
+      });
+    } catch (reason) {
+      console.error(`Error on GET 'swan/stacks/info'.\n${reason}`);
     }
   }
 
@@ -247,7 +262,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       }
       if (this.is_project && item.command === 'terminal:create-new') {
         item.args = {
-          initialCommand: 'swan_bash ' + this.project_name + '; exit 0'
+          initialCommand: 'swan_bash ' + this.project_name + ' ' + this.stacks_path + '; exit 0'
         };
       } else if (item.command === 'terminal:create-new') {
         item.args = { initialCommand: '' };
@@ -331,6 +346,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private platform = '';
   private user_script = '';
   private readme: string | null = '';
+  private stacks_path: string | null = '';
   public service_manager: ServiceManager | null = null;
 }
 
