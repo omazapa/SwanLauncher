@@ -63,9 +63,9 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     this.checkPath(options.cwd).then(rvalue => {
       this.update();
     });
-    this.stacksRequest().then((info:any) =>{
-      this.stacks_path = info["stacks"]["path"];
-    })
+    this.stacksRequest().then((info: any) => {
+      this.stacks_path = info['stacks']['path'];
+    });
   }
 
   protected startSpinner(): void {
@@ -262,7 +262,12 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       }
       if (this.is_project && item.command === 'terminal:create-new') {
         item.args = {
-          initialCommand: 'swan_bash ' + this.project_name + ' ' + this.stacks_path + '; exit 0'
+          initialCommand:
+            'swan_bash ' +
+            this.project_name +
+            ' ' +
+            this.stacks_path +
+            '; exit 0'
         };
       } else if (item.command === 'terminal:create-new') {
         item.args = { initialCommand: '' };
