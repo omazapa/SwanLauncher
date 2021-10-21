@@ -107,18 +107,17 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   }
 
   protected projectInfoRequest(project: string): any {
-    const dataToSend = { path: project };
+    const uri='swan/project/info?caller=swanlauncher&path='+project
     try {
-      return request<any>('swan/project/info', {
-        body: JSON.stringify(dataToSend),
-        method: 'POST'
+      return request<any>(uri, {
+        method: 'GET'
       }).then(rvalue => {
         this.update();
         return rvalue;
       });
     } catch (reason) {
       console.error(
-        `Error on POST 'swan/project/info'+ ${dataToSend}.\n${reason}`
+        `Error on GET ${uri}.\n${reason}`
       );
     }
   }
