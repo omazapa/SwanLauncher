@@ -170,6 +170,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       this.release = project_data['release'] as string;
       this.platform = project_data['platform'] as string;
       this.user_script = project_data['user_script'] as string;
+      this.project_path = project_data['full_path'] as string;
       if ('readme' in project_data) {
         this.readme = project_data['readme'] as string;
       } else {
@@ -263,7 +264,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
         item.args = {
           initialCommand:
             'swan_bash ' +
-            this.project_name +
+            this.project_path +
             ' ' +
             this.stacks_path +
             '; exit 0'
@@ -349,6 +350,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   private release = '';
   private platform = '';
   private user_script = '';
+  private project_path = '';
   private readme: string | null = '';
   private stacks_path: string | null = '';
   public service_manager: ServiceManager | null = null;
