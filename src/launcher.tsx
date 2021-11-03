@@ -160,8 +160,13 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
   async checkPath(cwd: string): Promise<void> {
     this.startSpinner();
     const info = await this.contentRequest(cwd);
-
-    this.is_project = info.is_project;
+    if(info.hasOwnProperty("project") || info.is_project )
+    {
+      this.is_project = true;
+    }else
+    {
+      this.is_project = false;
+    }
     const project_info = await this.projectInfoRequest(info.path);
     if (this.is_project) {
       const project_data = project_info['project_data'] as JSONObject;
