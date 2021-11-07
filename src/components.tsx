@@ -1,5 +1,6 @@
 import { LabIcon } from '@jupyterlab/ui-components';
 import { swanProjectIcon, swanConfigIcon, swanReadmeIcon } from './icons';
+import { JSONObject } from '@lumino/coreutils';
 
 import * as React from 'react';
 
@@ -20,18 +21,23 @@ export type SWANProjectIOptions = {
 };
 
 export function ProjectHeader(props: SWANProjectIOptions): JSX.Element {
-  function changeStack() {
-    props.commands
-      ?.execute('swan:edit-project-dialog', {
-        name: props.name,
-        stack: props.stack,
-        release: props.release,
-        platform: props.platform,
-        user_script: props.user_script
-      })
+  async function changeStack() {
+    await props.launcher?.projectInfoRequest(props.launcher?.cwd as string).then(async (project_info:any) => {
+      if (project_info.hasOwnProperty('project_data')) {
+        const project_data = project_info['project_data'] as JSONObject;
+        await props.commands
+        ?.execute('swan:edit-project-dialog', {
+          name: project_data['name'] as string,
+          stack: project_data['stack'] as string,
+          release: project_data['release'] as string,
+          platform: project_data['platform'] as string,
+          user_script: project_data['user_script'] as string
+        })
       .catch(message => {
         console.log(message);
       });
+        }
+    })
   }
   return (
     <table

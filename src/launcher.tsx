@@ -106,7 +106,7 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
     }
   }
 
-  protected projectInfoRequest(project: string): any {
+  public projectInfoRequest(project: string): any {
     const uri='swan/project/info?caller=swanlauncher&path='+project
     try {
       return request<any>(uri, {
@@ -268,11 +268,11 @@ export class SWANLauncher extends VDomRenderer<LauncherModel> {
       if (this.is_project && item.command === 'terminal:create-new') {
         item.args = {
           initialCommand:
-            'swan_bash ' +
+            'swan_bash "' +
             this.project_path +
-            ' ' +
+            '" "' +
             this.stacks_path +
-            '; exit 0'
+            '"; exit 0'
         };
       } else if (item.command === 'terminal:create-new') {
         item.args = { initialCommand: '' };
